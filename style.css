@@ -1490,11 +1490,18 @@ body::before {
   height: 36px !important;
 }
 
+.edu-post-listing__featured--img-left .edu-post-listing__img {
+  order: -1;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .edu-post-listing__featured {
     grid-template-columns: 1fr;
     gap: var(--space-md);
+  }
+  .edu-post-listing__featured--img-left .edu-post-listing__img {
+    order: 0;
   }
 
   .edu-post-listing__grid {

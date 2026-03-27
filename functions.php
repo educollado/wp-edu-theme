@@ -670,12 +670,14 @@ function edu_latest_post_shortcode( $atts ) {
 }
 add_shortcode( 'edu_latest_post', 'edu_latest_post_shortcode' );
 
-// Shortcode: [edu_latest_audio cat="308" title="Último Audio del Podcast"]
+// Shortcode: [edu_latest_audio cat="308" title="Último Audio del Podcast" img_position="right"]
 function edu_latest_audio_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
-		'cat'   => '',
-		'title' => '',
+		'cat'          => '',
+		'title'        => '',
+		'img_position' => 'right',
 	), $atts, 'edu_latest_audio' );
+	$img_left = ( 'left' === $atts['img_position'] );
 
 	$args = array(
 		'posts_per_page' => 1,
@@ -711,13 +713,15 @@ function edu_latest_audio_shortcode( $atts ) {
 	$excerpt     = get_the_excerpt();
 	wp_reset_postdata();
 
+	$article_class = 'edu-post-listing__featured is-podcast' . ( $img_left ? ' edu-post-listing__featured--img-left' : '' );
+
 	ob_start();
 	?>
 	<div class="edu-post-listing">
 		<?php if ( $atts['title'] ) : ?>
 			<h2 class="edu-post-listing__heading"><?php echo esc_html( $atts['title'] ); ?></h2>
 		<?php endif; ?>
-		<article class="edu-post-listing__featured is-podcast">
+		<article class="<?php echo esc_attr( $article_class ); ?>">
 			<div class="edu-post-listing__body">
 				<h3 class="edu-post-listing__title edu-post-listing__title--featured">
 					<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $post_title ); ?></a>
@@ -741,6 +745,75 @@ function edu_latest_audio_shortcode( $atts ) {
 	return ob_get_clean();
 }
 add_shortcode( 'edu_latest_audio', 'edu_latest_audio_shortcode' );
+
+// Shortcode: [edu_latest_article category="" title="" img_position="right"]
+function edu_latest_article_shortcode( $atts ) {
+	$atts = shortcode_atts( array(
+		'category'     => '',
+		'title'        => '',
+		'img_position' => 'right',
+	), $atts, 'edu_latest_article' );
+	$img_left = ( 'left' === $atts['img_position'] );
+
+	$args = array(
+		'posts_per_page' => 1,
+		'post_status'    => 'publish',
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+		'no_found_rows'  => true,
+	);
+
+	if ( ! empty( $atts['category'] ) ) {
+		if ( is_numeric( $atts['category'] ) ) {
+			$args['cat'] = (int) $atts['category'];
+		} else {
+			$args['category_name'] = sanitize_text_field( $atts['category'] );
+		}
+	}
+
+	$query = new WP_Query( $args );
+
+	if ( ! $query->have_posts() ) {
+		return '';
+	}
+
+	$query->the_post();
+	$post_id    = get_the_ID();
+	$post_title = get_the_title();
+	$permalink  = get_permalink();
+	$thumb_html = edu_get_post_preview_image_html( $post_id, 'edu-hero' );
+	$excerpt    = get_the_excerpt();
+	wp_reset_postdata();
+
+	$article_class = 'edu-post-listing__featured' . ( $img_left ? ' edu-post-listing__featured--img-left' : '' );
+
+	ob_start();
+	?>
+	<div class="edu-post-listing">
+		<?php if ( $atts['title'] ) : ?>
+			<h2 class="edu-post-listing__heading"><?php echo esc_html( $atts['title'] ); ?></h2>
+		<?php endif; ?>
+		<article class="<?php echo esc_attr( $article_class ); ?>">
+			<div class="edu-post-listing__body">
+				<h3 class="edu-post-listing__title edu-post-listing__title--featured">
+					<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $post_title ); ?></a>
+				</h3>
+				<?php if ( $excerpt ) : ?>
+					<p class="edu-post-listing__excerpt"><?php echo esc_html( $excerpt ); ?></p>
+				<?php endif; ?>
+				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__cta"><?php esc_html_e( 'Leer', 'edu-theme' ); ?> &rarr;</a>
+			</div>
+			<?php if ( $thumb_html ) : ?>
+				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
+					<?php echo $thumb_html; ?>
+				</a>
+			<?php endif; ?>
+		</article>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+add_shortcode( 'edu_latest_article', 'edu_latest_article_shortcode' );
 
 // ============================================================
 // Redes Sociales — Personalizador, shortcode y widget

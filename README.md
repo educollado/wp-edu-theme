@@ -121,9 +121,26 @@ Muestra el último episodio de podcast con reproductor de audio integrado.
 |---|---|---|
 | `cat` | — | Slug o ID de categoría del podcast |
 | `title` | — | Título de la sección |
+| `img_position` | `right` | Posición de la imagen: `left` o `right` |
 
 ```
-[edu_latest_audio cat="podcast" title="Último episodio"]
+[edu_latest_audio cat="podcast" title="Último episodio" img_position="left"]
+```
+
+---
+
+### `[edu_latest_article]`
+
+Muestra el último artículo de una categoría con imagen a izquierda o derecha. Sin reproductor de audio.
+
+| Atributo | Por defecto | Descripción |
+|---|---|---|
+| `category` | — | Slug o ID de categoría |
+| `title` | — | Título de la sección |
+| `img_position` | `right` | Posición de la imagen: `left` o `right` |
+
+```
+[edu_latest_article category="redes" title="Último artículo" img_position="right"]
 ```
 
 ---
