@@ -78,6 +78,66 @@ wp-edu-theme/
 
 ---
 
+## Shortcodes
+
+### `[edu_recent_posts]`
+
+Lista de entradas recientes con miniatura, título y fecha.
+
+| Atributo | Por defecto | Descripción |
+|---|---|---|
+| `count` | `5` | Número de entradas a mostrar |
+| `title` | — | Título de la sección |
+| `category` | — | Slug o ID de categoría para filtrar |
+| `orderby` | `date` | Criterio de ordenación (`date`, `title`, `rand`…) |
+
+```
+[edu_recent_posts count="3" title="Últimas entradas" category="podcast"]
+```
+
+---
+
+### `[edu_latest_post]`
+
+Destaca las últimas entradas con imagen hero + grid para el resto. Ideal para homepage o páginas de sección.
+
+| Atributo | Por defecto | Descripción |
+|---|---|---|
+| `count` | `1` | Número de entradas |
+| `title` | — | Título de la sección |
+| `category` | — | Slug o ID de categoría |
+
+```
+[edu_latest_post count="4" title="Blog" category="redes"]
+```
+
+---
+
+### `[edu_latest_audio]`
+
+Muestra el último episodio de podcast con reproductor de audio integrado.
+
+| Atributo | Por defecto | Descripción |
+|---|---|---|
+| `cat` | — | Slug o ID de categoría del podcast |
+| `title` | — | Título de la sección |
+
+```
+[edu_latest_audio cat="podcast" title="Último episodio"]
+```
+
+---
+
+### `[edu_social_icons]`
+
+Renderiza los iconos de redes sociales configurados en **Apariencia → Personalizar → Redes Sociales**. No admite atributos.
+
+```
+[edu_social_icons]
+```
+
+---
+
 ## Instalación
 
 1. Clona el repositorio en `wp-content/themes/`:
