@@ -555,6 +555,12 @@ function edu_latest_post_shortcode( $atts ) {
 		'count'    => 1,
 	), $atts, 'edu_latest_post' );
 
+	$cache_key = 'edu_latest_post_' . md5( serialize( $atts ) );
+	$cached    = get_transient( $cache_key );
+	if ( false !== $cached ) {
+		return $cached;
+	}
+
 	$args = array(
 		'posts_per_page' => max( 1, (int) $atts['count'] ),
 		'post_status'    => 'publish',
@@ -666,7 +672,9 @@ function edu_latest_post_shortcode( $atts ) {
 	</div><!-- .edu-post-listing -->
 	<?php
 	wp_reset_postdata();
-	return ob_get_clean();
+	$html = ob_get_clean();
+	set_transient( $cache_key, $html, HOUR_IN_SECONDS * 6 );
+	return $html;
 }
 add_shortcode( 'edu_latest_post', 'edu_latest_post_shortcode' );
 
@@ -678,6 +686,12 @@ function edu_latest_audio_shortcode( $atts ) {
 		'img_position' => 'right',
 	), $atts, 'edu_latest_audio' );
 	$img_left = ( 'left' === $atts['img_position'] );
+
+	$cache_key = 'edu_latest_audio_' . md5( serialize( $atts ) );
+	$cached    = get_transient( $cache_key );
+	if ( false !== $cached ) {
+		return $cached;
+	}
 
 	$args = array(
 		'posts_per_page' => 1,
@@ -742,7 +756,9 @@ function edu_latest_audio_shortcode( $atts ) {
 		</article>
 	</div>
 	<?php
-	return ob_get_clean();
+	$html = ob_get_clean();
+	set_transient( $cache_key, $html, HOUR_IN_SECONDS * 6 );
+	return $html;
 }
 add_shortcode( 'edu_latest_audio', 'edu_latest_audio_shortcode' );
 
@@ -754,6 +770,12 @@ function edu_latest_article_shortcode( $atts ) {
 		'img_position' => 'right',
 	), $atts, 'edu_latest_article' );
 	$img_left = ( 'left' === $atts['img_position'] );
+
+	$cache_key = 'edu_latest_article_' . md5( serialize( $atts ) );
+	$cached    = get_transient( $cache_key );
+	if ( false !== $cached ) {
+		return $cached;
+	}
 
 	$args = array(
 		'posts_per_page' => 1,
@@ -811,9 +833,20 @@ function edu_latest_article_shortcode( $atts ) {
 		</article>
 	</div>
 	<?php
-	return ob_get_clean();
+	$html = ob_get_clean();
+	set_transient( $cache_key, $html, HOUR_IN_SECONDS * 6 );
+	return $html;
 }
 add_shortcode( 'edu_latest_article', 'edu_latest_article_shortcode' );
+
+function edu_clear_shortcode_transients( $post_id ) {
+	global $wpdb;
+	$wpdb->query(
+		"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_edu_latest_%'"
+	);
+}
+add_action( 'save_post', 'edu_clear_shortcode_transients' );
+add_action( 'deleted_post', 'edu_clear_shortcode_transients' );
 
 // ============================================================
 // Redes Sociales — Personalizador, shortcode y widget

@@ -83,23 +83,29 @@
     var tocItems = ul.querySelectorAll('.toc__item');
     var tocLinks = ul.querySelectorAll('a');
 
+    var ticking = false;
     function onScroll() {
-      var scrollY = window.scrollY + 100;
-      var active  = null;
+      if ( ticking ) return;
+      ticking = true;
+      window.requestAnimationFrame( function () {
+        var scrollY = window.scrollY + 100;
+        var active  = null;
 
-      headings.forEach(function (h) {
-        if (h.offsetTop <= scrollY) {
-          active = h.id;
-        }
-      });
+        headings.forEach(function (h) {
+          if (h.offsetTop <= scrollY) {
+            active = h.id;
+          }
+        });
 
-      tocLinks.forEach(function (a) {
-        var li = a.parentElement;
-        if (a.getAttribute('href') === '#' + active) {
-          li.classList.add('toc__item--active');
-        } else {
-          li.classList.remove('toc__item--active');
-        }
+        tocLinks.forEach(function (a) {
+          var li = a.parentElement;
+          if (a.getAttribute('href') === '#' + active) {
+            li.classList.add('toc__item--active');
+          } else {
+            li.classList.remove('toc__item--active');
+          }
+        });
+        ticking = false;
       });
     }
 
