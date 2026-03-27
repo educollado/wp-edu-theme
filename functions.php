@@ -719,15 +719,18 @@ function edu_latest_audio_shortcode( $atts ) {
 	}
 
 	$query->the_post();
-	$post_id     = get_the_ID();
-	$post_title  = get_the_title();
-	$permalink   = get_permalink();
-	$thumb_html  = edu_get_post_preview_image_html( $post_id, 'edu-hero' );
-	$player_html = edu_get_audio_player_html( $post_id );
-	$excerpt     = get_the_excerpt();
+	$post_id        = get_the_ID();
+	$post_title     = get_the_title();
+	$permalink      = get_permalink();
+	$thumb_html     = edu_get_post_preview_image_html( $post_id, 'edu-hero' );
+	$player_html    = edu_get_audio_player_html( $post_id );
+	$excerpt        = get_the_excerpt();
+	$categories     = get_the_category( $post_id );
+	$category_label = $categories ? $categories[0]->name : '';
+	$post_date      = get_the_date( '', $post_id );
 	wp_reset_postdata();
 
-	$article_class = 'edu-post-listing__featured is-podcast' . ( $img_left ? ' edu-post-listing__featured--img-left' : '' );
+	$article_class = 'edu-post-listing__featured is-podcast' . ( $img_left ? '' : ' edu-post-listing__featured--img-right' );
 
 	ob_start();
 	?>
@@ -736,7 +739,18 @@ function edu_latest_audio_shortcode( $atts ) {
 			<h2 class="edu-post-listing__heading"><?php echo esc_html( $atts['title'] ); ?></h2>
 		<?php endif; ?>
 		<article class="<?php echo esc_attr( $article_class ); ?>">
+			<?php if ( $thumb_html ) : ?>
+				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
+					<?php echo $thumb_html; ?>
+				</a>
+			<?php endif; ?>
 			<div class="edu-post-listing__body">
+				<div class="edu-post-listing__meta">
+					<?php if ( $category_label ) : ?>
+						<span class="edu-post-listing__cat is-podcast"><?php echo esc_html( $category_label ); ?></span>
+					<?php endif; ?>
+					<span class="edu-post-listing__date"><?php echo esc_html( $post_date ); ?></span>
+				</div>
 				<h3 class="edu-post-listing__title edu-post-listing__title--featured">
 					<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $post_title ); ?></a>
 				</h3>
@@ -748,11 +762,6 @@ function edu_latest_audio_shortcode( $atts ) {
 				<?php endif; ?>
 				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__cta"><?php esc_html_e( 'Escuchar', 'edu-theme' ); ?> &rarr;</a>
 			</div>
-			<?php if ( $thumb_html ) : ?>
-				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-					<?php echo $thumb_html; ?>
-				</a>
-			<?php endif; ?>
 		</article>
 	</div>
 	<?php
@@ -800,14 +809,17 @@ function edu_latest_article_shortcode( $atts ) {
 	}
 
 	$query->the_post();
-	$post_id    = get_the_ID();
-	$post_title = get_the_title();
-	$permalink  = get_permalink();
-	$thumb_html = edu_get_post_preview_image_html( $post_id, 'edu-hero' );
-	$excerpt    = get_the_excerpt();
+	$post_id        = get_the_ID();
+	$post_title     = get_the_title();
+	$permalink      = get_permalink();
+	$thumb_html     = edu_get_post_preview_image_html( $post_id, 'edu-hero' );
+	$excerpt        = get_the_excerpt();
+	$categories     = get_the_category( $post_id );
+	$category_label = $categories ? $categories[0]->name : '';
+	$post_date      = get_the_date( '', $post_id );
 	wp_reset_postdata();
 
-	$article_class = 'edu-post-listing__featured' . ( $img_left ? ' edu-post-listing__featured--img-left' : '' );
+	$article_class = 'edu-post-listing__featured' . ( $img_left ? '' : ' edu-post-listing__featured--img-right' );
 
 	ob_start();
 	?>
@@ -816,7 +828,18 @@ function edu_latest_article_shortcode( $atts ) {
 			<h2 class="edu-post-listing__heading"><?php echo esc_html( $atts['title'] ); ?></h2>
 		<?php endif; ?>
 		<article class="<?php echo esc_attr( $article_class ); ?>">
+			<?php if ( $thumb_html ) : ?>
+				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
+					<?php echo $thumb_html; ?>
+				</a>
+			<?php endif; ?>
 			<div class="edu-post-listing__body">
+				<div class="edu-post-listing__meta">
+					<?php if ( $category_label ) : ?>
+						<span class="edu-post-listing__cat"><?php echo esc_html( $category_label ); ?></span>
+					<?php endif; ?>
+					<span class="edu-post-listing__date"><?php echo esc_html( $post_date ); ?></span>
+				</div>
 				<h3 class="edu-post-listing__title edu-post-listing__title--featured">
 					<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $post_title ); ?></a>
 				</h3>
@@ -825,11 +848,6 @@ function edu_latest_article_shortcode( $atts ) {
 				<?php endif; ?>
 				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__cta"><?php esc_html_e( 'Leer', 'edu-theme' ); ?> &rarr;</a>
 			</div>
-			<?php if ( $thumb_html ) : ?>
-				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-					<?php echo $thumb_html; ?>
-				</a>
-			<?php endif; ?>
 		</article>
 	</div>
 	<?php

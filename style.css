@@ -1498,6 +1498,10 @@ body::before {
   order: -1;
 }
 
+.edu-post-listing__featured--img-right .edu-post-listing__img {
+  order: 2;
+}
+
 .edu-post-listing__featured:last-child {
   margin-bottom: 0;
   padding-bottom: 0;
@@ -1511,6 +1515,10 @@ body::before {
     gap: var(--space-md);
   }
   .edu-post-listing__featured--img-left .edu-post-listing__img {
+    order: 0;
+  }
+
+  .edu-post-listing__featured--img-right .edu-post-listing__img {
     order: 0;
   }
 
