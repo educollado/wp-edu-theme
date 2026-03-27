@@ -1528,6 +1528,27 @@ body::before {
 }
 
 /* ============================================================
+   DOS COLUMNAS
+   ============================================================ */
+
+.edu-dos-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  margin: 0;
+}
+
+.edu-dos-columnas__col {
+  min-width: 0; /* evita desbordamiento en grid */
+}
+
+@media (max-width: 700px) {
+  .edu-dos-columnas {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
    FRONT PAGE HERO
    ============================================================ */
 

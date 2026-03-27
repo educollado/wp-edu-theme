@@ -145,6 +145,38 @@ Muestra el último artículo de una categoría con imagen a izquierda o derecha.
 
 ---
 
+### `[edu_dos_columnas]` + `[edu_col]`
+
+Divide el contenido en dos columnas de igual ancho. En móvil las columnas se apilan en vertical. Dentro de cada `[edu_col]` puedes poner texto, HTML u otros shortcodes del tema.
+
+```
+[edu_dos_columnas]
+[edu_col]
+Contenido de la columna izquierda.
+[/edu_col]
+[edu_col]
+Contenido de la columna derecha.
+[/edu_col]
+[/edu_dos_columnas]
+```
+
+Ejemplo combinando con otros shortcodes:
+
+```
+[edu_dos_columnas]
+[edu_col]
+[edu_latest_post title="Blog" category="redes" count="3"]
+[/edu_col]
+[edu_col]
+[edu_latest_audio cat="podcast" title="Último episodio"]
+[/edu_col]
+[/edu_dos_columnas]
+```
+
+> `[edu_dos_columnas]` no admite atributos. `[edu_col]` tampoco. Usa siempre exactamente dos `[edu_col]` dentro.
+
+---
+
 ### `[edu_social_icons]`
 
 Renderiza los iconos de redes sociales configurados en **Apariencia → Personalizar → Redes Sociales**. No admite atributos.

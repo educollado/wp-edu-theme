@@ -678,6 +678,24 @@ function edu_latest_post_shortcode( $atts ) {
 }
 add_shortcode( 'edu_latest_post', 'edu_latest_post_shortcode' );
 
+// Shortcode: [edu_dos_columnas]...[/edu_dos_columnas]
+// Uso: envuelve dos bloques [edu_col]...[/edu_col] para mostrarlos en dos columnas.
+function edu_dos_columnas_shortcode( $atts, $content = '' ) {
+	// wpautop inserta <p> y <br> entre los [edu_col] internos, rompiendo el grid.
+	// Los eliminamos antes de procesar los shortcodes hijos.
+	$content = preg_replace( '/<p>\s*<\/p>/i', '', $content );
+	$content = preg_replace( '/<br\s*\/?>/i', '', $content );
+	return '<div class="edu-dos-columnas">' . do_shortcode( trim( $content ) ) . '</div>';
+}
+add_shortcode( 'edu_dos_columnas', 'edu_dos_columnas_shortcode' );
+
+// Shortcode interno: [edu_col]...[/edu_col]
+// Cada uno representa una columna dentro de [edu_dos_columnas].
+function edu_col_shortcode( $atts, $content = '' ) {
+	return '<div class="edu-dos-columnas__col">' . do_shortcode( wpautop( $content ) ) . '</div>';
+}
+add_shortcode( 'edu_col', 'edu_col_shortcode' );
+
 // Shortcode: [edu_latest_audio cat="308" title="Último Audio del Podcast" img_position="right"]
 function edu_latest_audio_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
