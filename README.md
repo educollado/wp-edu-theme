@@ -70,4 +70,4 @@ wp-edu-theme/
 
 ## Licencia
 
-GPL v2 o posterior — ver [LICENSE](https://www.gnu.org/licenses/gpl-2.0.html).
+GPL v2 o posterior — ver [LICENSE](LICENSE).
