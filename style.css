@@ -1390,8 +1390,8 @@ body::before {
   grid-template-columns: 1fr 1fr;
   gap: var(--space-xl);
   align-items: center;
-  margin-bottom: var(--space-xl);
-  padding-bottom: var(--space-xl);
+  margin-bottom: 20px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--color-border);
 }
 
