@@ -1300,7 +1300,7 @@ body::before {
    ============================================================ */
 
 .edu-post-listing {
-  margin: var(--space-xl) 0;
+  margin: var(--space-lg) 0;
 }
 
 .edu-post-listing__heading {
@@ -1492,6 +1492,12 @@ body::before {
 
 .edu-post-listing__featured--img-left .edu-post-listing__img {
   order: -1;
+}
+
+.edu-post-listing__featured:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 /* --- Responsive --- */
