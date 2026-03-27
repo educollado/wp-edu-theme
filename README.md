@@ -1,6 +1,20 @@
 # wp-edu-theme
 
+![Versión](https://img.shields.io/badge/versión-1.0.0-b5470e?style=flat-square)
+![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-21759b?style=flat-square&logo=wordpress&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.0%2B-777bb4?style=flat-square&logo=php&logoColor=white)
+![Licencia](https://img.shields.io/badge/licencia-GPL%20v2-4caf50?style=flat-square)
+
 Tema WordPress a medida para [eduardocollado.com](https://eduardocollado.com) — blog personal y podcast sobre redes, tecnología y aprendizaje.
+
+---
+
+## Preview
+
+> _Captura pendiente de añadir._
+
+<!-- Cuando tengas un screenshot: -->
+<!-- ![Preview del tema](assets/screenshot.png) -->
 
 ---
 
@@ -13,6 +27,30 @@ Tema WordPress a medida para [eduardocollado.com](https://eduardocollado.com) �
 - **Sin dependencias de JS externas** — vanilla JS puro, sin jQuery
 - **Tamaños de imagen optimizados** — `edu-card` (640×360), `edu-hero` (1200×500), `edu-thumb` (80×80)
 - **Compatible con el editor de bloques** — soporte para `wp-block-styles` y `editor-styles`
+
+---
+
+## Diseño
+
+### Paleta de color
+
+| Token | Valor | Uso |
+|---|---|---|
+| `--color-bg-primary` | `#f6f2eb` | Fondo principal |
+| `--color-bg-secondary` | `#eee8dc` | Fondo secundario |
+| `--color-bg-card` | `#fdfaf5` | Fondo de tarjetas |
+| `--color-accent-primary` | `#b5470e` | Terracota — acento principal |
+| `--color-accent-secondary` | `#e06c35` | Terracota claro |
+| `--color-text-primary` | `#1c1814` | Texto principal |
+| `--color-text-secondary` | `#7a6f68` | Texto secundario |
+
+### Tipografía
+
+| Rol | Familia | Uso |
+|---|---|---|
+| `--font-display` | Fraunces | Títulos y cabeceras |
+| `--font-body` | Figtree | Texto corrido y UI |
+| `--font-code` | IBM Plex Mono | Código y elementos técnicos |
 
 ---
 
@@ -45,7 +83,7 @@ wp-edu-theme/
 
 ## Instalación
 
-1. Clona o descarga el repositorio en `wp-content/themes/`:
+1. Clona el repositorio en `wp-content/themes/`:
 
    ```bash
    git clone git@github.com:educollado/wp-edu-theme.git wp-content/themes/wp-edu-theme
@@ -65,6 +103,17 @@ wp-edu-theme/
 
 - WordPress 6.0 o superior
 - PHP 8.0 o superior
+
+---
+
+## Changelog
+
+### 1.0.0 — 2026-03-21
+- Lanzamiento inicial del tema
+- Soporte para blog y podcast
+- Tabla de contenidos automática
+- Navegación con walker personalizado
+- Tamaños de imagen `edu-card`, `edu-hero` y `edu-thumb`
 
 ---
 
