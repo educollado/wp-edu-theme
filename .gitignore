@@ -1,0 +1,8 @@
+# Claude Code — archivos locales
+.claude/
+MEMORY.md
+
+# WordPress
+*.log
+.DS_Store
+Thumbs.db
