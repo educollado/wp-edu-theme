@@ -11,10 +11,7 @@ Tema WordPress a medida para [eduardocollado.com](https://eduardocollado.com) ‚Ä
 
 ## Preview
 
-> _Captura pendiente de a√±adir._
-
-<!-- Cuando tengas un screenshot: -->
-<!-- ![Preview del tema](assets/screenshot.png) -->
+![Preview del tema](screenshot.jpg)
 
 ---
 
