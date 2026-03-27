@@ -717,7 +717,7 @@ function edu_latest_audio_shortcode( $atts ) {
 
 	ob_start();
 	?>
-	<div class="edu-post-listing">
+	<div class="edu-post-listing edu-post-listing--compact">
 		<?php if ( $atts['title'] ) : ?>
 			<h2 class="edu-post-listing__heading"><?php echo esc_html( $atts['title'] ); ?></h2>
 		<?php endif; ?>
@@ -789,7 +789,7 @@ function edu_latest_article_shortcode( $atts ) {
 
 	ob_start();
 	?>
-	<div class="edu-post-listing">
+	<div class="edu-post-listing edu-post-listing--compact">
 		<?php if ( $atts['title'] ) : ?>
 			<h2 class="edu-post-listing__heading"><?php echo esc_html( $atts['title'] ); ?></h2>
 		<?php endif; ?>

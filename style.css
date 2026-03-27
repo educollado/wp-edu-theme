@@ -1300,6 +1300,10 @@ body::before {
    ============================================================ */
 
 .edu-post-listing {
+  margin: var(--space-xl) 0;
+}
+
+.edu-post-listing--compact {
   margin: var(--space-md) 0;
 }
 
