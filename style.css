@@ -881,15 +881,11 @@ body::before {
 
 .prose-section-title:first-child { margin-top: 0; }
 
-/* H2 bicolor: primera palabra negra, resto terracota */
-h2.h2--split { color: var(--color-accent-primary); }
-h2.h2--split .h2-first { color: var(--color-text-primary); }
-
 .prose h2 {
   font-family: var(--font-display);
   font-size: 1.05rem;
   font-weight: 600;
-  color: var(--color-accent-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
   margin: calc(var(--space-lg) * 1.2) 0 var(--space-sm);
   padding-left: var(--space-sm);

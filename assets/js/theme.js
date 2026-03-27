@@ -27,22 +27,6 @@
     });
   }
 
-  // ── H2: primera palabra en negro, resto en terracota ───────────────────────
-
-  document.querySelectorAll('h2').forEach(function (h) {
-    var text = h.textContent.trim();
-    if (!text) return;
-    var spaceIdx = text.indexOf(' ');
-    if (spaceIdx === -1) return; // una sola palabra, sin efecto
-    var span = document.createElement('span');
-    span.className = 'h2-first';
-    span.textContent = text.slice(0, spaceIdx);
-    h.textContent = '';
-    h.appendChild(span);
-    h.appendChild(document.createTextNode(text.slice(spaceIdx)));
-    h.classList.add('h2--split');
-  });
-
   // ── TOC dinámico ───────────────────────────────────────────────────────────
 
   var tocNav   = document.getElementById('toc-nav');
