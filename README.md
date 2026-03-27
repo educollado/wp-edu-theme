@@ -135,12 +135,12 @@ Muestra el último artículo de una categoría con imagen a izquierda o derecha.
 
 | Atributo | Por defecto | Descripción |
 |---|---|---|
-| `category` | — | Slug o ID de categoría |
+| `cat` | — | Slug o ID de categoría |
 | `title` | — | Título de la sección |
 | `img_position` | `right` | Posición de la imagen: `left` o `right` |
 
 ```
-[edu_latest_article category="redes" title="Último artículo" img_position="right"]
+[edu_latest_article cat="redes" title="Último artículo" img_position="right"]
 ```
 
 ---

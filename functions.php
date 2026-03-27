@@ -746,10 +746,10 @@ function edu_latest_audio_shortcode( $atts ) {
 }
 add_shortcode( 'edu_latest_audio', 'edu_latest_audio_shortcode' );
 
-// Shortcode: [edu_latest_article category="" title="" img_position="right"]
+// Shortcode: [edu_latest_article cat="" title="" img_position="right"]
 function edu_latest_article_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
-		'category'     => '',
+		'cat'          => '',
 		'title'        => '',
 		'img_position' => 'right',
 	), $atts, 'edu_latest_article' );
@@ -763,11 +763,11 @@ function edu_latest_article_shortcode( $atts ) {
 		'no_found_rows'  => true,
 	);
 
-	if ( ! empty( $atts['category'] ) ) {
-		if ( is_numeric( $atts['category'] ) ) {
-			$args['cat'] = (int) $atts['category'];
+	if ( ! empty( $atts['cat'] ) ) {
+		if ( is_numeric( $atts['cat'] ) ) {
+			$args['cat'] = (int) $atts['cat'];
 		} else {
-			$args['category_name'] = sanitize_text_field( $atts['category'] );
+			$args['category_name'] = sanitize_text_field( $atts['cat'] );
 		}
 	}
 
