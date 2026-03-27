@@ -1314,7 +1314,7 @@ body::before {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--space-sm) !important;
   padding: 0;
   border: 0;
 }
