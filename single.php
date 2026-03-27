@@ -37,7 +37,7 @@
           ?>
             <div class="course-hero__badges animate-up animate-up--delay-3">
               <?php foreach ( $tags as $tag ) : ?>
-                <a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" class="tag"><?php echo esc_html( $tag->name ); ?></a>
+                <a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" class="post-tag"><?php echo esc_html( $tag->name ); ?></a>
               <?php endforeach; ?>
             </div>
           <?php endif; ?>
@@ -116,7 +116,7 @@
         ?>
           <div class="sidebar-tags">
             <?php foreach ( $tags as $tag ) : ?>
-              <a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" class="tag"><?php echo esc_html( $tag->name ); ?></a>
+              <a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" class="post-tag"><?php echo esc_html( $tag->name ); ?></a>
             <?php endforeach; ?>
           </div>
         <?php endif; ?>

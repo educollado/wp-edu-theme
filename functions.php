@@ -106,7 +106,7 @@ function edu_get_post_categories_html( $post_id = null ) {
 	if ( empty( $cats ) ) return '';
 	$out = '';
 	foreach ( $cats as $cat ) {
-		$out .= '<a href="' . esc_url( get_category_link( $cat->term_id ) ) . '" class="tag tag--cyan">' . esc_html( $cat->name ) . '</a> ';
+		$out .= '<a href="' . esc_url( get_category_link( $cat->term_id ) ) . '" class="post-tag post-tag--cyan">' . esc_html( $cat->name ) . '</a> ';
 	}
 	return trim( $out );
 }
