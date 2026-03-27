@@ -3,7 +3,7 @@
 ![Versión](https://img.shields.io/badge/versión-1.0.0-b5470e?style=flat-square)
 ![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-21759b?style=flat-square&logo=wordpress&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.0%2B-777bb4?style=flat-square&logo=php&logoColor=white)
-![Licencia](https://img.shields.io/badge/licencia-GPL%20v2-4caf50?style=flat-square)
+![Licencia](https://img.shields.io/badge/licencia-GPL%20v3-4caf50?style=flat-square)
 
 Tema WordPress a medida para [eduardocollado.com](https://eduardocollado.com) — blog personal y podcast sobre redes, tecnología y aprendizaje.
 
@@ -193,4 +193,4 @@ Renderiza los iconos de redes sociales configurados en **Apariencia → Personal
 
 ## Licencia
 
-GPL v2 o posterior — ver [LICENSE](LICENSE).
+GPL v3 — ver [LICENSE](LICENSE).
