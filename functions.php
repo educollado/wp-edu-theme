@@ -242,11 +242,17 @@ function edu_get_supported_social_image_data_from_attachment( $attachment_id ) {
 			// Mastodon and many social crawlers don't support AVIF previews,
 			// so fall back to the original pre-conversion file when needed.
 			if ( 'avif' === $served_ext ) {
+				// Try the pre-conversion original (only useful when a plugin
+				// rewrote a JPEG→AVIF; if the original is also AVIF, skip it).
 				$original_url = function_exists( 'wp_get_original_image_url' )
 					? wp_get_original_image_url( $attachment_id )
 					: '';
 
-				if ( $original_url ) {
+				$original_ext = $original_url
+					? strtolower( pathinfo( wp_parse_url( $original_url, PHP_URL_PATH ), PATHINFO_EXTENSION ) )
+					: '';
+
+				if ( $original_url && 'avif' !== $original_ext ) {
 					$meta = wp_get_attachment_metadata( $attachment_id );
 					return array(
 						'url'    => $original_url,
@@ -254,6 +260,8 @@ function edu_get_supported_social_image_data_from_attachment( $attachment_id ) {
 						'height' => ! empty( $meta['height'] ) ? (int) $meta['height'] : 0,
 					);
 				}
+				// Original is also AVIF (uploaded as AVIF) → fall through to
+				// sizes loop, which will find nothing → no og:image output.
 			} else {
 				return array(
 					'url'    => $image_data[0],
