@@ -514,6 +514,7 @@ body::before {
    ============================================================ */
 
 .course-hero {
+  max-width: 72ch;
   padding: var(--space-md) 0 var(--space-sm);
   margin-bottom: var(--space-md);
 }
