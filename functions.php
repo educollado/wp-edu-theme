@@ -981,6 +981,25 @@ function edu_social_icons_shortcode() {
 }
 add_shortcode( 'edu_social_icons', 'edu_social_icons_shortcode' );
 
+function edu_fediverse_creator_meta() {
+	$url = get_theme_mod( 'edu_social_mastodon', '' );
+	if ( ! $url ) {
+		return;
+	}
+	$parsed = wp_parse_url( $url );
+	if ( empty( $parsed['host'] ) || empty( $parsed['path'] ) ) {
+		return;
+	}
+	$domain   = $parsed['host'];
+	$username = ltrim( $parsed['path'], '/' ); // "@ecollado"
+	if ( ! $username ) {
+		return;
+	}
+	$handle = $username . '@' . $domain; // "@ecollado@mastodon.social"
+	echo '<meta name="fediverse:creator" content="' . esc_attr( $handle ) . '">' . "\n";
+}
+add_action( 'wp_head', 'edu_fediverse_creator_meta' );
+
 class Edu_Social_Icons_Widget extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
