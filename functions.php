@@ -739,14 +739,16 @@ function edu_col_shortcode( $atts, $content = '' ) {
 }
 add_shortcode( 'edu_col', 'edu_col_shortcode' );
 
-// Shortcode: [edu_latest_audio cat="308" title="Último Audio del Podcast" img_position="right"]
+// Shortcode: [edu_latest_audio cat="308" title="Último Audio del Podcast" img_position="right|left|up|down"]
 function edu_latest_audio_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
 		'cat'          => '',
 		'title'        => '',
 		'img_position' => 'right',
 	), $atts, 'edu_latest_audio' );
-	$img_left = ( 'left' === $atts['img_position'] );
+	$img_pos = in_array( $atts['img_position'], array( 'left', 'right', 'up', 'down' ), true )
+		? $atts['img_position']
+		: 'right';
 
 	$cache_key = 'edu_latest_audio_' . md5( serialize( $atts ) );
 	$cached    = get_transient( $cache_key );
@@ -791,7 +793,7 @@ function edu_latest_audio_shortcode( $atts ) {
 	$post_date      = get_the_date( '', $post_id );
 	wp_reset_postdata();
 
-	$article_class = 'edu-post-listing__featured is-podcast' . ( $img_left ? '' : ' edu-post-listing__featured--img-right' );
+	$article_class = 'edu-post-listing__featured is-podcast edu-post-listing__featured--img-' . $img_pos;
 
 	ob_start();
 	?>
@@ -832,14 +834,16 @@ function edu_latest_audio_shortcode( $atts ) {
 }
 add_shortcode( 'edu_latest_audio', 'edu_latest_audio_shortcode' );
 
-// Shortcode: [edu_latest_article cat="" title="" img_position="right"]
+// Shortcode: [edu_latest_article cat="" title="" img_position="right|left|up|down"]
 function edu_latest_article_shortcode( $atts ) {
 	$atts = shortcode_atts( array(
 		'cat'          => '',
 		'title'        => '',
 		'img_position' => 'right',
 	), $atts, 'edu_latest_article' );
-	$img_left = ( 'left' === $atts['img_position'] );
+	$img_pos = in_array( $atts['img_position'], array( 'left', 'right', 'up', 'down' ), true )
+		? $atts['img_position']
+		: 'right';
 
 	$cache_key = 'edu_latest_article_' . md5( serialize( $atts ) );
 	$cached    = get_transient( $cache_key );
@@ -880,7 +884,7 @@ function edu_latest_article_shortcode( $atts ) {
 	$post_date      = get_the_date( '', $post_id );
 	wp_reset_postdata();
 
-	$article_class = 'edu-post-listing__featured' . ( $img_left ? '' : ' edu-post-listing__featured--img-right' );
+	$article_class = 'edu-post-listing__featured edu-post-listing__featured--img-' . $img_pos;
 
 	ob_start();
 	?>

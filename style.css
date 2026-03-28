@@ -1502,6 +1502,20 @@ body::before {
   order: 2;
 }
 
+.edu-post-listing__featured--img-up,
+.edu-post-listing__featured--img-down {
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+}
+
+.edu-post-listing__featured--img-up .edu-post-listing__img {
+  order: -1;
+}
+
+.edu-post-listing__featured--img-down .edu-post-listing__img {
+  order: 2;
+}
+
 .edu-post-listing__featured:last-child {
   margin-bottom: 0;
   padding-bottom: 0;
