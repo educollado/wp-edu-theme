@@ -202,7 +202,7 @@ function edu_get_post_preview_image_html( $post_id = null, $size = 'thumbnail' )
 }
 
 function edu_is_supported_social_image_mime_type( $mime_type ) {
-	return in_array( $mime_type, array( 'image/jpeg', 'image/png', 'image/gif' ), true );
+	return in_array( $mime_type, array( 'image/jpeg', 'image/png', 'image/gif', 'image/webp' ), true );
 }
 
 function edu_normalize_social_image_url( $image_url ) {
@@ -236,11 +236,31 @@ function edu_get_supported_social_image_data_from_attachment( $attachment_id ) {
 		$image_data = wp_get_attachment_image_src( $attachment_id, 'full' );
 
 		if ( ! empty( $image_data[0] ) ) {
-			return array(
-				'url'    => $image_data[0],
-				'width'  => ! empty( $image_data[1] ) ? (int) $image_data[1] : 0,
-				'height' => ! empty( $image_data[2] ) ? (int) $image_data[2] : 0,
-			);
+			$served_ext = strtolower( pathinfo( wp_parse_url( $image_data[0], PHP_URL_PATH ), PATHINFO_EXTENSION ) );
+
+			// Plugins (ShortPixel, Imagify…) rewrite URLs to AVIF/WebP.
+			// Mastodon and many social crawlers don't support AVIF previews,
+			// so fall back to the original pre-conversion file when needed.
+			if ( 'avif' === $served_ext ) {
+				$original_url = function_exists( 'wp_get_original_image_url' )
+					? wp_get_original_image_url( $attachment_id )
+					: '';
+
+				if ( $original_url ) {
+					$meta = wp_get_attachment_metadata( $attachment_id );
+					return array(
+						'url'    => $original_url,
+						'width'  => ! empty( $meta['width'] ) ? (int) $meta['width'] : 0,
+						'height' => ! empty( $meta['height'] ) ? (int) $meta['height'] : 0,
+					);
+				}
+			} else {
+				return array(
+					'url'    => $image_data[0],
+					'width'  => ! empty( $image_data[1] ) ? (int) $image_data[1] : 0,
+					'height' => ! empty( $image_data[2] ) ? (int) $image_data[2] : 0,
+				);
+			}
 		}
 	}
 
@@ -470,7 +490,22 @@ function edu_output_social_meta_tags() {
 	<meta name="twitter:title" content="<?php echo esc_attr( $title ); ?>">
 	<meta name="twitter:description" content="<?php echo esc_attr( $description ); ?>">
 	<?php if ( ! empty( $image['url'] ) ) : ?>
+		<?php
+		$img_ext  = strtolower( pathinfo( wp_parse_url( $image['url'], PHP_URL_PATH ), PATHINFO_EXTENSION ) );
+		$img_mime = array(
+			'jpg'  => 'image/jpeg',
+			'jpeg' => 'image/jpeg',
+			'png'  => 'image/png',
+			'gif'  => 'image/gif',
+			'webp' => 'image/webp',
+			'avif' => 'image/avif',
+		);
+		$img_type = ! empty( $img_mime[ $img_ext ] ) ? $img_mime[ $img_ext ] : '';
+		?>
 		<meta property="og:image" content="<?php echo esc_url( $image['url'] ); ?>">
+		<?php if ( $img_type ) : ?>
+			<meta property="og:image:type" content="<?php echo esc_attr( $img_type ); ?>">
+		<?php endif; ?>
 		<meta name="twitter:image" content="<?php echo esc_url( $image['url'] ); ?>">
 		<?php if ( ! empty( $image['width'] ) ) : ?>
 			<meta property="og:image:width" content="<?php echo (int) $image['width']; ?>">
