@@ -931,6 +931,36 @@ function edu_clear_shortcode_transients( $post_id ) {
 add_action( 'save_post', 'edu_clear_shortcode_transients' );
 add_action( 'deleted_post', 'edu_clear_shortcode_transients' );
 
+function edu_admin_bar_clear_transients( WP_Admin_Bar $wp_admin_bar ) {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	$url = add_query_arg( 'edu_clear_transients', '1', remove_query_arg( 'edu_clear_transients' ) );
+	$wp_admin_bar->add_node( array(
+		'id'    => 'edu-clear-transients',
+		'title' => '🗑 Borrar transients',
+		'href'  => wp_nonce_url( $url, 'edu_clear_transients' ),
+	) );
+}
+add_action( 'admin_bar_menu', 'edu_admin_bar_clear_transients', 999 );
+
+function edu_handle_clear_transients() {
+	if ( ! isset( $_GET['edu_clear_transients'] ) ) {
+		return;
+	}
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	check_admin_referer( 'edu_clear_transients' );
+	global $wpdb;
+	$wpdb->query(
+		"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_edu_latest_%'"
+	);
+	wp_safe_redirect( remove_query_arg( array( 'edu_clear_transients', '_wpnonce' ) ) );
+	exit;
+}
+add_action( 'init', 'edu_handle_clear_transients' );
+
 // ============================================================
 // Redes Sociales — Personalizador, shortcode y widget
 // ============================================================
@@ -968,6 +998,44 @@ function edu_social_customizer( $wp_customize ) {
 	}
 }
 add_action( 'customize_register', 'edu_social_customizer' );
+
+function edu_hero_customizer( $wp_customize ) {
+	$wp_customize->add_section( 'edu_hero', array(
+		'title'    => __( 'Hero (portada)', 'edu-theme' ),
+		'priority' => 125,
+	) );
+
+	$wp_customize->add_setting( 'hero_bg_image', array(
+		'default'           => '',
+		'sanitize_callback' => 'esc_url_raw',
+	) );
+	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'hero_bg_image', array(
+		'label'   => __( 'Imagen de fondo', 'edu-theme' ),
+		'section' => 'edu_hero',
+	) ) );
+
+	$wp_customize->add_setting( 'hero_sub_text', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+	$wp_customize->add_control( 'hero_sub_text', array(
+		'label'   => __( 'Subtítulo', 'edu-theme' ),
+		'section' => 'edu_hero',
+		'type'    => 'textarea',
+	) );
+
+	$wp_customize->add_setting( 'hero_cred_text', array(
+		'default'           => '',
+		'sanitize_callback' => 'wp_kses_post',
+	) );
+	$wp_customize->add_control( 'hero_cred_text', array(
+		'label'       => __( 'Credenciales', 'edu-theme' ),
+		'description' => __( 'HTML básico permitido. Ejemplo: Cofundador de &lt;a href="https://..."&gt;Tecnocrática&lt;/a&gt; · Infraestructura en producción', 'edu-theme' ),
+		'section'     => 'edu_hero',
+		'type'        => 'textarea',
+	) );
+}
+add_action( 'customize_register', 'edu_hero_customizer' );
 
 function edu_get_social_svg( $network ) {
 	$svgs = array(
