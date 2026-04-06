@@ -356,32 +356,6 @@ body::before {
   margin-bottom: var(--space-lg);
 }
 
-.hero__title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  margin-bottom: var(--space-md);
-}
-
-.hero__title .highlight {
-  color: var(--color-accent-primary);
-  text-shadow: var(--glow-accent);
-}
-
-.hero__description {
-  max-width: 560px;
-  font-size: 1.05rem;
-  color: var(--color-text-secondary);
-  line-height: 1.7;
-  margin-bottom: var(--space-xl);
-}
-
-.hero__cta {
-  margin-top: var(--space-lg);
-}
-
 .hero--img {
   background-size: cover;
   background-position: center;
@@ -725,26 +699,6 @@ body::before {
     border-top: 1px solid var(--color-border);
     padding: var(--space-md);
   }
-}
-
-/* ============================================================
-   CONTENT LAYOUT (legacy, mantenido para compatibilidad)
-   ============================================================ */
-
-.content-layout {
-  display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: var(--space-xl);
-  padding-bottom: var(--space-xl);
-  align-items: start;
-}
-
-.content-layout > * {
-  min-width: 0;
-}
-
-@media (max-width: 900px) {
-  .content-layout { grid-template-columns: 1fr; }
 }
 
 /* ============================================================
@@ -1193,12 +1147,6 @@ figure:has(img.foto-overlay)::after {
   padding-top: 0;
 }
 
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--space-lg);
-}
-
 .post-card {
   position: relative;
   background: #fff;
@@ -1349,69 +1297,6 @@ figure:has(img.foto-overlay)::after {
 
 .post-card:hover .post-card__cta {
   gap: var(--space-sm);
-}
-
-.edu-inline-post {
-  margin: var(--space-lg) 0;
-}
-
-.prose .edu-inline-post .post-card {
-  max-width: none;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  overflow: visible;
-}
-
-.prose .edu-inline-post .post-card:hover {
-  transform: none;
-  box-shadow: none;
-  border-color: transparent;
-}
-
-.prose .edu-inline-post .post-card__bar {
-  display: none;
-}
-
-.prose .edu-inline-post .post-card__title {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.prose .edu-inline-post .post-card__excerpt {
-  margin: 0;
-  font-size: 0.875rem;
-  line-height: 1.65;
-}
-
-.prose .edu-inline-post .post-card__body {
-  padding: 0;
-}
-
-.prose .edu-inline-post .post-card__footer {
-  padding: var(--space-md) 0 0;
-  border-top: 0;
-}
-
-.post-card__podcast-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(224, 108, 53, 0.12);
-  color: var(--color-accent-secondary);
-  font-size: 0.8rem;
-  flex-shrink: 0;
 }
 
 /* ============================================================
@@ -1821,62 +1706,6 @@ figure:has(img.foto-overlay)::after {
   .edu-dos-columnas {
     grid-template-columns: 1fr;
   }
-}
-
-/* ============================================================
-   FRONT PAGE HERO
-   ============================================================ */
-
-.site-tagline {
-  padding: var(--space-lg) 0 var(--space-md);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.site-hero {
-  padding: calc(var(--space-xl) * 1.5) 0 var(--space-xl);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.site-hero__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-accent-primary);
-  margin-bottom: var(--space-md);
-}
-
-.site-hero__eyebrow::before {
-  content: '';
-  display: block;
-  width: 24px;
-  height: 1px;
-  background: var(--color-accent-primary);
-}
-
-.site-hero__title {
-  font-family: var(--font-display);
-  font-size: clamp(2.2rem, 5vw, 3.8rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  margin-bottom: var(--space-md);
-}
-
-.site-hero__title .highlight {
-  color: var(--color-accent-primary);
-}
-
-.site-hero__description {
-  max-width: 580px;
-  font-size: 1.05rem;
-  color: var(--color-text-secondary);
-  line-height: 1.7;
-  margin-bottom: var(--space-lg);
 }
 
 /* ============================================================
@@ -2303,46 +2132,6 @@ figure:has(img.foto-overlay)::after {
 }
 
 /* ============================================================
-   SHARE BUTTONS — Jetpack
-   ============================================================ */
-
-/* Contenedor principal: bloque */
-.sharedaddy.sd-sharing-enabled {
-  margin-top: var(--space-lg);
-}
-
-/* Título "Comparte esto:" en su propia línea */
-.sharedaddy .sd-title {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-sm);
-  padding-bottom: var(--space-sm);
-  border-bottom: 1px solid var(--color-border);
-}
-
-/* Iconos en fila horizontal */
-.sharedaddy .sd-content ul {
-  list-style: none;
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  padding: 0;
-  margin: 0;
-}
-
-.sharedaddy .sd-content ul li {
-  display: inline-flex !important;
-  margin: 0 !important;
-  float: none !important;
-}
-
-/* ============================================================
    WIDGET AREAS
    ============================================================ */
 
@@ -2680,7 +2469,6 @@ figure:has(img.foto-overlay)::after {
     gap: 0.75rem;
   }
 
-  .posts-grid { grid-template-columns: 1fr; }
   .footer {
     margin-top: 0.5rem;
     padding: 0.75rem 0;
