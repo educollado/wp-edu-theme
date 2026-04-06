@@ -212,7 +212,26 @@ Renderiza los iconos de redes sociales configurados en **Apariencia → Personal
 
 ---
 
+## Personalizar el hero de la homepage
+
+Los ajustes del hero se configuran en **Apariencia → Personalizar**:
+
+| Theme mod | Descripción |
+|---|---|
+| `hero_bg_image` | URL de imagen de fondo (activa clase `hero--img`) |
+| `hero_sub_text` | Subtítulo bajo el título principal |
+| `hero_cred_text` | Texto de credenciales / bio corta (acepta HTML básico) |
+
+---
+
 ## Changelog
+
+### 1.1.0 — 2026-04-06
+- Hero de la homepage refactorizado: configurable desde el Personalizador (`hero_bg_image`, `hero_sub_text`, `hero_cred_text`)
+- Añadido botón «Borrar Transients» en la barra de administración
+- Soporte de `img_position` `up`/`down` en `[edu_latest_audio]` y `[edu_latest_article]`
+- Corrección de `og:image` para imágenes AVIF originales
+- Limpieza de tarjeta de podcast: eliminado icono ▶ duplicado
 
 ### 1.0.0 — 2026-03-21
 - Lanzamiento inicial del tema
