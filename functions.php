@@ -62,6 +62,35 @@ function edu_theme_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'edu_theme_scripts' );
 
+function edu_strip_leading_escaped_newlines( $html ) {
+	if ( ! is_string( $html ) || '' === $html ) {
+		return $html;
+	}
+
+	$html = preg_replace(
+		'/(<meta\s+name="nocatbasewpruntime\d+-wpversion"[^>]*>)\\\\n(<script>window\.nocatbasewpruntime\d+_wpversion = true;<\/script>)\\\\n/i',
+		"$1\n$2\n",
+		$html,
+		1
+	);
+
+	return preg_replace(
+		'/(<body\b[^>]*>\s*)(?:(?:\\\\r)?\\\\n\s*)+/i',
+		'$1',
+		$html,
+		1
+	);
+}
+
+function edu_start_output_buffer() {
+	if ( is_admin() || wp_doing_ajax() || is_feed() || is_robots() || is_trackback() ) {
+		return;
+	}
+
+	ob_start( 'edu_strip_leading_escaped_newlines' );
+}
+add_action( 'template_redirect', 'edu_start_output_buffer', 0 );
+
 function edu_theme_widgets_init() {
 	register_sidebar( array(
 		'name'          => __( 'Sidebar del blog', 'edu-theme' ),
@@ -598,7 +627,7 @@ function edu_latest_post_shortcode( $atts ) {
 		'count'    => 1,
 	), $atts, 'edu_latest_post' );
 
-	$cache_key = 'edu_latest_post_' . md5( serialize( $atts ) );
+	$cache_key = 'edu_latest_post_v2_' . md5( serialize( $atts ) );
 	$cached    = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
@@ -651,11 +680,13 @@ function edu_latest_post_shortcode( $atts ) {
 
 			if ( $index === 0 ) :
 		?>
-		<article class="edu-post-listing__featured<?php echo $is_podcast ? ' is-podcast' : ''; ?>">
+		<article class="edu-post-listing__featured<?php echo $thumb_html ? ' edu-post-listing__featured--split' : ''; ?><?php echo $is_podcast ? ' is-podcast' : ''; ?>">
 			<?php if ( $thumb_html ) : ?>
-				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-					<?php echo $thumb_html; ?>
-				</a>
+				<div class="edu-post-listing__media">
+					<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
+						<?php echo $thumb_html; ?>
+					</a>
+				</div>
 			<?php endif; ?>
 			<div class="edu-post-listing__body">
 				<div class="edu-post-listing__meta">
@@ -750,7 +781,7 @@ function edu_latest_audio_shortcode( $atts ) {
 		? $atts['img_position']
 		: 'right';
 
-	$cache_key = 'edu_latest_audio_' . md5( serialize( $atts ) );
+	$cache_key = 'edu_latest_audio_v2_' . md5( serialize( $atts ) );
 	$cached    = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
@@ -794,6 +825,7 @@ function edu_latest_audio_shortcode( $atts ) {
 	wp_reset_postdata();
 
 	$article_class = 'edu-post-listing__featured is-podcast edu-post-listing__featured--img-' . $img_pos;
+	$has_side_media = $thumb_html && in_array( $img_pos, array( 'left', 'right' ), true );
 
 	ob_start();
 	?>
@@ -802,7 +834,13 @@ function edu_latest_audio_shortcode( $atts ) {
 			<h2 class="edu-post-listing__heading"><?php echo esc_html( $atts['title'] ); ?></h2>
 		<?php endif; ?>
 		<article class="<?php echo esc_attr( $article_class ); ?>">
-			<?php if ( $thumb_html ) : ?>
+			<?php if ( $has_side_media ) : ?>
+				<div class="edu-post-listing__media">
+					<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
+						<?php echo $thumb_html; ?>
+					</a>
+				</div>
+			<?php elseif ( $thumb_html ) : ?>
 				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
 					<?php echo $thumb_html; ?>
 				</a>
@@ -845,7 +883,7 @@ function edu_latest_article_shortcode( $atts ) {
 		? $atts['img_position']
 		: 'right';
 
-	$cache_key = 'edu_latest_article_' . md5( serialize( $atts ) );
+	$cache_key = 'edu_latest_article_v2_' . md5( serialize( $atts ) );
 	$cached    = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
@@ -885,6 +923,7 @@ function edu_latest_article_shortcode( $atts ) {
 	wp_reset_postdata();
 
 	$article_class = 'edu-post-listing__featured edu-post-listing__featured--img-' . $img_pos;
+	$has_side_media = $thumb_html && in_array( $img_pos, array( 'left', 'right' ), true );
 
 	ob_start();
 	?>
@@ -893,7 +932,13 @@ function edu_latest_article_shortcode( $atts ) {
 			<h2 class="edu-post-listing__heading"><?php echo esc_html( $atts['title'] ); ?></h2>
 		<?php endif; ?>
 		<article class="<?php echo esc_attr( $article_class ); ?>">
-			<?php if ( $thumb_html ) : ?>
+			<?php if ( $has_side_media ) : ?>
+				<div class="edu-post-listing__media">
+					<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
+						<?php echo $thumb_html; ?>
+					</a>
+				</div>
+			<?php elseif ( $thumb_html ) : ?>
 				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
 					<?php echo $thumb_html; ?>
 				</a>

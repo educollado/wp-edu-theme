@@ -57,11 +57,13 @@
 
                 if ( $archive_index === 0 ) :
               ?>
-              <article class="edu-post-listing__featured<?php echo $is_podcast ? ' is-podcast' : ''; ?>">
+              <article class="edu-post-listing__featured<?php echo $thumb ? ' edu-post-listing__featured--split' : ''; ?><?php echo $is_podcast ? ' is-podcast' : ''; ?>">
                 <?php if ( $thumb ) : ?>
-                  <a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-                    <?php echo $thumb; ?>
-                  </a>
+                  <div class="edu-post-listing__media">
+                    <a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
+                      <?php echo $thumb; ?>
+                    </a>
+                  </div>
                 <?php endif; ?>
                 <div class="edu-post-listing__body">
                   <div class="edu-post-listing__meta">
