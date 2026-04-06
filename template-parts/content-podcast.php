@@ -13,7 +13,7 @@
 
   <div class="post-card__body">
     <div class="post-card__meta">
-      <span class="post-card__category">&#9654; Podcast</span>
+      <span class="post-card__category">Podcast</span>
       <span class="post-card__date"><?php echo esc_html( get_the_date() ); ?></span>
     </div>
 
@@ -36,6 +36,5 @@
     <a href="<?php the_permalink(); ?>" class="post-card__cta">
       <?php esc_html_e( 'Escuchar episodio', 'edu-theme' ); ?> &rarr;
     </a>
-    <span class="post-card__podcast-icon" aria-hidden="true">&#9654;</span>
   </div>
 </article>
