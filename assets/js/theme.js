@@ -111,8 +111,8 @@
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-  } else if (tocCard && (!prose || prose.querySelectorAll('h2, h3').length === 0)) {
-    if (tocCard) tocCard.style.display = 'none';
+  } else if (tocCard) {
+    tocCard.style.display = 'none';
   }
 
 }());

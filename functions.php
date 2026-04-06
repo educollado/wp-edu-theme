@@ -140,10 +140,6 @@ function edu_get_post_categories_html( $post_id = null ) {
 	return trim( $out );
 }
 
-function edu_the_post_categories( $post_id = null ) {
-	echo edu_get_post_categories_html( $post_id );
-}
-
 function edu_split_title( $title ) {
 	$parts = explode( ' ', trim( $title ), 2 );
 	if ( count( $parts ) === 1 ) {
@@ -180,7 +176,7 @@ function edu_get_audio_player_html( $post_id = null ) {
 			if ( $player ) return $player;
 		}
 		// Fallback: audio nativo con la URL de Powerpress
-		return '<audio controls preload="none" style="width:100%"><source src="' . esc_url( $pp_url ) . '"></audio>';
+		return '<audio controls preload="none" class="edu-audio-player"><source src="' . esc_url( $pp_url ) . '"></audio>';
 	}
 
 	// 2. Enclosure estándar de WordPress
@@ -188,7 +184,7 @@ function edu_get_audio_player_html( $post_id = null ) {
 	if ( $enclosure ) {
 		$enc_url = trim( explode( "\n", $enclosure )[0] );
 		if ( $enc_url && preg_match( '/\.(mp3|m4a|ogg|wav|aac|flac)(\?|$)/i', $enc_url ) ) {
-			return '<audio controls preload="none" style="width:100%"><source src="' . esc_url( $enc_url ) . '"></audio>';
+			return '<audio controls preload="none" class="edu-audio-player"><source src="' . esc_url( $enc_url ) . '"></audio>';
 		}
 	}
 
@@ -196,15 +192,11 @@ function edu_get_audio_player_html( $post_id = null ) {
 	foreach ( array( 'audio_url', 'audio_file', 'mp3_url', 'podcast_url' ) as $key ) {
 		$meta_url = get_post_meta( $post_id, $key, true );
 		if ( $meta_url ) {
-			return '<audio controls preload="none" style="width:100%"><source src="' . esc_url( $meta_url ) . '"></audio>';
+			return '<audio controls preload="none" class="edu-audio-player"><source src="' . esc_url( $meta_url ) . '"></audio>';
 		}
 	}
 
 	return '';
-}
-
-function edu_get_podcast_player_html( $post_id = null ) {
-	return edu_get_audio_player_html( $post_id );
 }
 
 function edu_get_post_preview_image_html( $post_id = null, $size = 'thumbnail' ) {
@@ -967,11 +959,18 @@ function edu_latest_article_shortcode( $atts ) {
 }
 add_shortcode( 'edu_latest_article', 'edu_latest_article_shortcode' );
 
-function edu_clear_shortcode_transients( $post_id ) {
+function edu_delete_shortcode_transients() {
 	global $wpdb;
-	$wpdb->query(
-		"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_edu_latest_%'"
-	);
+	$prefix = $wpdb->esc_like( '_transient_edu_latest_' );
+	$wpdb->query( $wpdb->prepare(
+		"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+		$prefix . '%',
+		'_transient_timeout_edu_latest_%'
+	) );
+}
+
+function edu_clear_shortcode_transients( $post_id ) {
+	edu_delete_shortcode_transients();
 }
 add_action( 'save_post', 'edu_clear_shortcode_transients' );
 add_action( 'deleted_post', 'edu_clear_shortcode_transients' );
@@ -997,10 +996,7 @@ function edu_handle_clear_transients() {
 		return;
 	}
 	check_admin_referer( 'edu_clear_transients' );
-	global $wpdb;
-	$wpdb->query(
-		"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_edu_latest_%'"
-	);
+	edu_delete_shortcode_transients();
 	wp_safe_redirect( remove_query_arg( array( 'edu_clear_transients', '_wpnonce' ) ) );
 	exit;
 }

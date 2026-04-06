@@ -1310,6 +1310,8 @@ figure:has(img.foto-overlay)::after {
   width: 100%;
 }
 
+.edu-audio-player { width: 100%; }
+
 .post-card__player audio,
 .post-card__player .wp-audio-shortcode,
 .post-card__player .powerpress_player,

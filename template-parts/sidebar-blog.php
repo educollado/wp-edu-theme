@@ -11,7 +11,7 @@
     <p class="sidebar-card__title"><?php esc_html_e( 'Categorías', 'edu-theme' ); ?></p>
     <ul class="sidebar-cat-list">
       <?php
-      $cats = get_categories( array( 'hide_empty' => true ) );
+      $cats = get_categories( array( 'hide_empty' => true, 'number' => 20, 'orderby' => 'count', 'order' => 'DESC' ) );
       foreach ( $cats as $cat ) :
       ?>
         <li>
@@ -28,7 +28,7 @@
     <p class="sidebar-card__title"><?php esc_html_e( 'Entradas recientes', 'edu-theme' ); ?></p>
     <ul class="sidebar-posts-list">
       <?php
-      $recent = get_posts( array( 'numberposts' => 5, 'post_status' => 'publish' ) );
+      $recent = get_posts( array( 'numberposts' => 5, 'post_status' => 'publish', 'post_type' => 'post', 'no_found_rows' => true ) );
       foreach ( $recent as $post ) :
         setup_postdata( $post );
       ?>

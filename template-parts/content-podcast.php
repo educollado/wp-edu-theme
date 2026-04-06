@@ -1,7 +1,7 @@
 <article class="post-card post-card--podcast">
   <div class="post-card__bar"></div>
 
-  <?php $player_html = is_category( 'podcast' ) ? edu_get_podcast_player_html() : ''; ?>
+  <?php $player_html = is_category( 'podcast' ) ? edu_get_audio_player_html() : ''; ?>
 
   <?php if ( has_post_thumbnail() ) : ?>
     <div class="post-card__thumb">
