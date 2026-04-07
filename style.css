@@ -2534,3 +2534,23 @@ figure:has(img.foto-overlay)::after {
   text-decoration: none;
   outline-offset: 2px;
 }
+
+/* Jetpack sharing buttons: anular flex-direction: column de .prose ul */
+.prose .sharedaddy ul,
+.prose .sd-content ul {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-left: 0;
+  gap: var(--space-xs);
+}
+
+.prose .sharedaddy li,
+.prose .sd-content li {
+  padding-left: 0;
+}
+
+.prose .sharedaddy li::marker,
+.prose .sd-content li::marker {
+  content: none;
+}

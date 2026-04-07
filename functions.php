@@ -960,17 +960,38 @@ function edu_latest_article_shortcode( $atts ) {
 add_shortcode( 'edu_latest_article', 'edu_latest_article_shortcode' );
 
 function edu_delete_shortcode_transients() {
-	global $wpdb;
-	$prefix = $wpdb->esc_like( '_transient_edu_latest_' );
-	$wpdb->query( $wpdb->prepare(
-		"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-		$prefix . '%',
-		'_transient_timeout_edu_latest_%'
-	) );
+	if ( wp_using_ext_object_cache() ) {
+		// Redis/Memcached: los transients viven en el object cache, no en la BD.
+		// wp_cache_flush() los elimina; WP los regenera en la siguiente petición.
+		wp_cache_flush();
+	} else {
+		global $wpdb;
+		$prefix = $wpdb->esc_like( '_transient_edu_latest_' );
+		$wpdb->query( $wpdb->prepare(
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+			$prefix . '%',
+			'_transient_timeout_edu_latest_%'
+		) );
+	}
 }
 
 function edu_clear_shortcode_transients( $post_id ) {
+	// Ignorar autosaves y revisiones
+	if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+		return;
+	}
+
 	edu_delete_shortcode_transients();
+
+	// WP Super Cache
+	if ( function_exists( 'wp_cache_post_change' ) ) {
+		wp_cache_post_change( $post_id );
+	}
+
+	// Autoptimize
+	if ( class_exists( 'autoptimizeCache' ) ) {
+		autoptimizeCache::clearall();
+	}
 }
 add_action( 'save_post', 'edu_clear_shortcode_transients' );
 add_action( 'deleted_post', 'edu_clear_shortcode_transients' );
