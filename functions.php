@@ -469,16 +469,12 @@ function edu_output_social_meta_tags() {
 		return;
 	}
 
-	$post_id = is_singular() ? get_queried_object_id() : 0;
-
-	if ( ! $post_id && ! is_home() && ! is_front_page() ) {
-		return;
-	}
-
-	$title       = '';
-	$description = '';
-	$url         = '';
-	$type        = 'website';
+	$post_id          = is_singular() ? get_queried_object_id() : 0;
+	$title            = '';
+	$description      = '';
+	$url              = '';
+	$type             = 'website';
+	$archive_img_only = false; // archives use site icon as og:image fallback
 
 	if ( $post_id ) {
 		$title       = get_the_title( $post_id );
@@ -489,13 +485,38 @@ function edu_output_social_meta_tags() {
 		if ( ! $url ) {
 			$url = get_permalink( $post_id );
 		}
-	} else {
+	} elseif ( is_home() || is_front_page() ) {
 		$title       = get_bloginfo( 'name', 'display' );
 		$description = edu_get_social_share_description();
 		$url         = home_url( '/' );
+	} elseif ( is_category() ) {
+		$term             = get_queried_object();
+		$title            = single_cat_title( '', false );
+		$desc_raw         = category_description();
+		$description      = $desc_raw ? wp_strip_all_tags( $desc_raw ) : edu_get_social_share_description();
+		$link             = get_term_link( $term );
+		$url              = ! is_wp_error( $link ) ? $link : home_url( '/' );
+		$archive_img_only = true;
+	} elseif ( is_tag() ) {
+		$term             = get_queried_object();
+		$title            = single_tag_title( '', false );
+		$desc_raw         = tag_description();
+		$description      = $desc_raw ? wp_strip_all_tags( $desc_raw ) : edu_get_social_share_description();
+		$link             = get_term_link( $term );
+		$url              = ! is_wp_error( $link ) ? $link : home_url( '/' );
+		$archive_img_only = true;
+	} elseif ( is_author() ) {
+		$author           = get_queried_object();
+		$title            = get_the_author_meta( 'display_name', $author->ID );
+		$bio              = get_the_author_meta( 'description', $author->ID );
+		$description      = $bio ? wp_strip_all_tags( $bio ) : edu_get_social_share_description();
+		$url              = get_author_posts_url( $author->ID );
+		$archive_img_only = true;
+	} else {
+		return;
 	}
 
-	$image = edu_get_social_share_image_data( $post_id );
+	$image = edu_get_social_share_image_data( $archive_img_only ? 0 : $post_id );
 
 	if ( ! $title ) {
 		$title = wp_get_document_title();
@@ -508,7 +529,20 @@ function edu_output_social_meta_tags() {
 	if ( ! $url ) {
 		$url = home_url( '/' );
 	}
+
+	// og:image:alt — use attachment alt text or fall back to page title
+	$image_alt = '';
+	if ( ! empty( $image['url'] ) ) {
+		if ( $post_id && has_post_thumbnail( $post_id ) ) {
+			$thumb_id  = get_post_thumbnail_id( $post_id );
+			$image_alt = get_post_meta( $thumb_id, '_wp_attachment_image_alt', true );
+		}
+		if ( ! $image_alt ) {
+			$image_alt = $title;
+		}
+	}
 	?>
+	<meta name="description" content="<?php echo esc_attr( $description ); ?>">
 	<meta property="og:site_name" content="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>">
 	<meta property="og:locale" content="<?php echo esc_attr( get_locale() ); ?>">
 	<meta property="og:type" content="<?php echo esc_attr( $type ); ?>">
@@ -516,6 +550,7 @@ function edu_output_social_meta_tags() {
 	<meta property="og:description" content="<?php echo esc_attr( $description ); ?>">
 	<meta property="og:url" content="<?php echo esc_url( $url ); ?>">
 	<meta name="twitter:card" content="<?php echo ! empty( $image['url'] ) ? 'summary_large_image' : 'summary'; ?>">
+	<meta name="twitter:site" content="@ecollado">
 	<meta name="twitter:title" content="<?php echo esc_attr( $title ); ?>">
 	<meta name="twitter:description" content="<?php echo esc_attr( $description ); ?>">
 	<?php if ( ! empty( $image['url'] ) ) : ?>
@@ -532,6 +567,7 @@ function edu_output_social_meta_tags() {
 		$img_type = ! empty( $img_mime[ $img_ext ] ) ? $img_mime[ $img_ext ] : '';
 		?>
 		<meta property="og:image" content="<?php echo esc_url( $image['url'] ); ?>">
+		<meta property="og:image:alt" content="<?php echo esc_attr( $image_alt ); ?>">
 		<?php if ( $img_type ) : ?>
 			<meta property="og:image:type" content="<?php echo esc_attr( $img_type ); ?>">
 		<?php endif; ?>
@@ -550,6 +586,158 @@ function edu_output_social_meta_tags() {
 	<?php
 }
 add_action( 'wp_head', 'edu_output_social_meta_tags', 5 );
+
+function edu_output_canonical() {
+	if ( is_admin() || is_feed() || is_robots() || is_trackback() || is_singular() ) {
+		return;
+	}
+
+	if (
+		defined( 'WPSEO_VERSION' ) ||
+		defined( 'RANK_MATH_VERSION' ) ||
+		defined( 'AIOSEO_VERSION' ) ||
+		defined( 'SEOPRESS_VERSION' )
+	) {
+		return;
+	}
+
+	$canonical = '';
+	$paged     = (int) get_query_var( 'paged' );
+
+	if ( is_front_page() || is_home() ) {
+		$canonical = $paged > 1 ? get_pagenum_link( $paged ) : home_url( '/' );
+	} elseif ( is_category() || is_tag() || is_tax() ) {
+		$term = get_queried_object();
+		if ( $term ) {
+			$link = get_term_link( $term );
+			if ( ! is_wp_error( $link ) ) {
+				$canonical = $paged > 1 ? get_pagenum_link( $paged ) : $link;
+			}
+		}
+	} elseif ( is_author() ) {
+		$author = get_queried_object();
+		if ( $author ) {
+			$base      = get_author_posts_url( $author->ID );
+			$canonical = $paged > 1 ? get_pagenum_link( $paged ) : $base;
+		}
+	}
+
+	if ( $canonical ) {
+		echo "\t" . '<link rel="canonical" href="' . esc_url( $canonical ) . '">' . "\n";
+	}
+}
+add_action( 'wp_head', 'edu_output_canonical', 1 );
+
+function edu_output_json_ld() {
+	if ( is_admin() || is_feed() || is_robots() || is_trackback() ) {
+		return;
+	}
+
+	if (
+		defined( 'WPSEO_VERSION' ) ||
+		defined( 'RANK_MATH_VERSION' ) ||
+		defined( 'AIOSEO_VERSION' ) ||
+		defined( 'SEOPRESS_VERSION' )
+	) {
+		return;
+	}
+
+	$site_name = get_bloginfo( 'name', 'display' );
+	$site_url  = home_url( '/' );
+	$graph     = array();
+	$author    = array(
+		'@type' => 'Person',
+		'name'  => 'Eduardo Collado',
+		'url'   => $site_url,
+	);
+
+	if ( is_front_page() || is_home() ) {
+		$graph[] = array(
+			'@type'           => 'WebSite',
+			'name'            => $site_name,
+			'url'             => $site_url,
+			'potentialAction' => array(
+				'@type'       => 'SearchAction',
+				'target'      => array(
+					'@type'       => 'EntryPoint',
+					'urlTemplate' => $site_url . '?s={search_term_string}',
+				),
+				'query-input' => 'required name=search_term_string',
+			),
+		);
+		$graph[] = array_merge( $author, array( 'sameAs' => array( 'https://twitter.com/ecollado' ) ) );
+
+	} elseif ( is_singular() ) {
+		$post_id = get_queried_object_id();
+		$post    = get_post( $post_id );
+		if ( ! $post ) {
+			return;
+		}
+
+		$desc     = edu_get_social_share_description( $post_id );
+		$url      = wp_get_canonical_url( $post_id ) ?: get_permalink( $post_id );
+		$pub      = get_post_time( DATE_W3C, true, $post );
+		$mod      = get_post_modified_time( DATE_W3C, true, $post );
+		$img_data = edu_get_social_share_image_data( $post_id );
+		$img_url  = ! empty( $img_data['url'] ) ? $img_data['url'] : '';
+
+		if ( edu_is_podcast( $post_id ) ) {
+			$schema = array(
+				'@type'         => 'PodcastEpisode',
+				'name'          => get_the_title( $post_id ),
+				'description'   => $desc,
+				'url'           => $url,
+				'datePublished' => $pub,
+				'author'        => $author,
+			);
+		} else {
+			$schema = array(
+				'@type'            => 'BlogPosting',
+				'headline'         => get_the_title( $post_id ),
+				'description'      => $desc,
+				'url'              => $url,
+				'datePublished'    => $pub,
+				'dateModified'     => $mod,
+				'author'           => $author,
+				'mainEntityOfPage' => array( '@type' => 'WebPage', '@id' => $url ),
+			);
+		}
+
+		if ( $img_url ) {
+			$schema['image'] = $img_url;
+		}
+
+		$graph[] = $schema;
+
+	} elseif ( is_category() || is_tag() || is_tax() ) {
+		$term = get_queried_object();
+		if ( $term ) {
+			$link = get_term_link( $term );
+			if ( ! is_wp_error( $link ) ) {
+				$desc    = wp_strip_all_tags( term_description( $term ) );
+				$desc    = $desc ?: edu_get_social_share_description();
+				$graph[] = array(
+					'@type'       => 'CollectionPage',
+					'name'        => single_term_title( '', false ),
+					'description' => $desc,
+					'url'         => $link,
+				);
+			}
+		}
+	}
+
+	if ( empty( $graph ) ) {
+		return;
+	}
+
+	$ld = array(
+		'@context' => 'https://schema.org',
+		'@graph'   => $graph,
+	);
+
+	echo "\t" . '<script type="application/ld+json">' . wp_json_encode( $ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}
+add_action( 'wp_head', 'edu_output_json_ld', 6 );
 
 // Shortcode: [edu_recent_posts count="5" title="Últimas entradas" category="" orderby="date"]
 function edu_recent_posts_shortcode( $atts ) {
