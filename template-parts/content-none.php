@@ -1,4 +1,6 @@
-<div class="error-card" style="max-width:560px;margin:var(--space-xl) auto;text-align:center;">
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit;
+?><div class="error-card" style="max-width:560px;margin:var(--space-xl) auto;text-align:center;">
   <p class="error-card__title"><?php esc_html_e( 'No hay contenido', 'edu-theme' ); ?></p>
   <p class="error-card__desc">
     <?php

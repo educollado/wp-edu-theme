@@ -758,9 +758,17 @@ function edu_recent_posts_shortcode( $atts ) {
 
 	if ( ! empty( $atts['category'] ) ) {
 		if ( is_numeric( $atts['category'] ) ) {
-			$args['cat'] = (int) $atts['category'];
+			$cat_id = (int) $atts['category'];
+			// Validar que la categoría existe
+			if ( get_category( $cat_id ) ) {
+				$args['cat'] = $cat_id;
+			}
 		} else {
-			$args['category_name'] = sanitize_text_field( $atts['category'] );
+			$cat_slug = sanitize_text_field( $atts['category'] );
+			// Validar que el slug de categoría existe
+			if ( term_exists( $cat_slug, 'category' ) ) {
+				$args['category_name'] = $cat_slug;
+			}
 		}
 	}
 
@@ -807,7 +815,10 @@ function edu_latest_post_shortcode( $atts ) {
 		'count'    => 1,
 	), $atts, 'edu_latest_post' );
 
-	$cache_key = 'edu_latest_post_v2_' . md5( serialize( $atts ) );
+	// Generar cache key determinista: ordenar parametros y usar json_encode
+	$sorted_atts = $atts;
+	ksort( $sorted_atts );
+	$cache_key = 'edu_latest_post_v2_' . md5( json_encode( $sorted_atts ) );
 	$cached    = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
@@ -823,9 +834,17 @@ function edu_latest_post_shortcode( $atts ) {
 
 	if ( ! empty( $atts['category'] ) ) {
 		if ( is_numeric( $atts['category'] ) ) {
-			$args['cat'] = (int) $atts['category'];
+			$cat_id = (int) $atts['category'];
+			// Validar que la categoría existe
+			if ( get_category( $cat_id ) ) {
+				$args['cat'] = $cat_id;
+			}
 		} else {
-			$args['category_name'] = sanitize_text_field( $atts['category'] );
+			$cat_slug = sanitize_text_field( $atts['category'] );
+			// Validar que el slug de categoría existe
+			if ( term_exists( $cat_slug, 'category' ) ) {
+				$args['category_name'] = $cat_slug;
+			}
 		}
 	}
 
@@ -961,7 +980,10 @@ function edu_latest_audio_shortcode( $atts ) {
 		? $atts['img_position']
 		: 'right';
 
-	$cache_key = 'edu_latest_audio_v2_' . md5( serialize( $atts ) );
+	// Generar cache key determinista: ordenar parametros y usar json_encode
+	$sorted_atts = $atts;
+	ksort( $sorted_atts );
+	$cache_key = 'edu_latest_audio_v2_' . md5( json_encode( $sorted_atts ) );
 	$cached    = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
@@ -977,13 +999,19 @@ function edu_latest_audio_shortcode( $atts ) {
 	);
 
 	if ( ! empty( $atts['cat'] ) ) {
-		$args['tax_query'] = array(
-			array(
-				'taxonomy' => 'category',
-				'field'    => is_numeric( $atts['cat'] ) ? 'term_id' : 'slug',
-				'terms'    => is_numeric( $atts['cat'] ) ? (int) $atts['cat'] : sanitize_text_field( $atts['cat'] ),
-			),
-		);
+		$cat_value = is_numeric( $atts['cat'] ) ? (int) $atts['cat'] : sanitize_text_field( $atts['cat'] );
+		$field = is_numeric( $atts['cat'] ) ? 'term_id' : 'slug';
+		// Validar que la categoría existe
+		if ( ( $field === 'term_id' && get_category( $cat_value ) ) ||
+			 ( $field === 'slug' && term_exists( $cat_value, 'category' ) ) ) {
+			$args['tax_query'] = array(
+				array(
+					'taxonomy' => 'category',
+					'field'    => $field,
+					'terms'    => $cat_value,
+				),
+			);
+		}
 	}
 
 	$query = new WP_Query( $args );
@@ -1063,7 +1091,10 @@ function edu_latest_article_shortcode( $atts ) {
 		? $atts['img_position']
 		: 'right';
 
-	$cache_key = 'edu_latest_article_v2_' . md5( serialize( $atts ) );
+	// Generar cache key determinista: ordenar parametros y usar json_encode
+	$sorted_atts = $atts;
+	ksort( $sorted_atts );
+	$cache_key = 'edu_latest_article_v2_' . md5( json_encode( $sorted_atts ) );
 	$cached    = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
@@ -1079,9 +1110,17 @@ function edu_latest_article_shortcode( $atts ) {
 
 	if ( ! empty( $atts['cat'] ) ) {
 		if ( is_numeric( $atts['cat'] ) ) {
-			$args['cat'] = (int) $atts['cat'];
+			$cat_id = (int) $atts['cat'];
+			// Validar que la categoría existe
+			if ( get_category( $cat_id ) ) {
+				$args['cat'] = $cat_id;
+			}
 		} else {
-			$args['category_name'] = sanitize_text_field( $atts['cat'] );
+			$cat_slug = sanitize_text_field( $atts['cat'] );
+			// Validar que el slug de categoría existe
+			if ( term_exists( $cat_slug, 'category' ) ) {
+				$args['category_name'] = $cat_slug;
+			}
 		}
 	}
 
@@ -1149,16 +1188,37 @@ add_shortcode( 'edu_latest_article', 'edu_latest_article_shortcode' );
 
 function edu_delete_shortcode_transients() {
 	if ( wp_using_ext_object_cache() ) {
-		// Redis/Memcached: los transients viven en el object cache, no en la BD.
-		// wp_cache_flush() los elimina; WP los regenera en la siguiente petición.
-		wp_cache_flush();
+		// Redis/Memcached: borrar solo los transients específicos del tema
+		// en lugar de flush completo que afecta todo el cache
+		$cache_keys = array(
+			'_transient_edu_latest_post_v2_',
+			'_transient_edu_latest_audio_v2_',
+			'_transient_edu_latest_article_v2_',
+		);
+		foreach ( $cache_keys as $key ) {
+			// Borrar todos los transients que empiecen con este prefijo
+			if ( function_exists( 'wp_cache_delete' ) ) {
+				wp_cache_delete( $key . '%' );
+			}
+		}
+		// También borrar patrones de timeout
+		$timeout_keys = array(
+			'_transient_timeout_edu_latest_post_v2_',
+			'_transient_timeout_edu_latest_audio_v2_',
+			'_transient_timeout_edu_latest_article_v2_',
+		);
+		foreach ( $timeout_keys as $key ) {
+			if ( function_exists( 'wp_cache_delete' ) ) {
+				wp_cache_delete( $key . '%' );
+			}
+		}
 	} else {
 		global $wpdb;
-		$prefix = $wpdb->esc_like( '_transient_edu_latest_' );
+		$prefix = $wpdb->esc_like( '_transient_edu_' );
 		$wpdb->query( $wpdb->prepare(
 			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
 			$prefix . '%',
-			'_transient_timeout_edu_latest_%'
+			'_transient_timeout_edu_%'
 		) );
 	}
 }

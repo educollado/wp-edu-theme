@@ -1,4 +1,6 @@
-<article class="post-card">
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit;
+?><article class="post-card">
   <div class="post-card__bar"></div>
 
   <?php if ( has_post_thumbnail() ) : ?>

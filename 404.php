@@ -1,5 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
+?>
 global $wp_query;
 $wp_query->set_404();
 status_header( 404 );
