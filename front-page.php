@@ -2,8 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 $page_on_front = (int) get_option( 'page_on_front' );
-?>
-
 get_header();
 ?>
 
