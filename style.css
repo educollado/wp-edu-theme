@@ -2254,7 +2254,7 @@ figure:has(img.foto-overlay)::after {
 
 .widget a,
 .textwidget a {
-  color: var(--color-text-secondary) !important;
+  color: var(--color-accent-primary) !important;
   text-decoration: underline;
   text-decoration-color: var(--color-border);
   text-underline-offset: 3px;
