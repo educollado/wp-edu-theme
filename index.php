@@ -13,9 +13,9 @@ get_header();
           <h1 class="course-hero__title animate-up">
             <?php
             if ( is_home() && ! is_front_page() ) {
-              echo edu_split_title( get_queried_object()->post_title );
+              echo esc_html( get_queried_object()->post_title );
             } else {
-              echo 'Últimas <span class="title-rest">entradas</span>';
+              echo 'Últimas entradas';
             }
             ?>
           </h1>

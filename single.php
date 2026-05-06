@@ -28,7 +28,7 @@ get_header();
             ?>
           </p>
 
-          <h1 class="course-hero__title animate-up animate-up--delay-1"><?php echo edu_split_title( get_the_title() ); ?></h1>
+          <h1 class="course-hero__title animate-up animate-up--delay-1"><?php echo esc_html( get_the_title() ); ?></h1>
 
           <?php if ( has_excerpt() ) : ?>
             <p class="course-hero__subtitle animate-up animate-up--delay-2"><?php echo esc_html( get_the_excerpt() ); ?></p>

@@ -14,17 +14,17 @@ get_header();
           <h1 class="course-hero__title animate-up">
             <?php
             if ( is_category() ) {
-              echo edu_split_title( single_cat_title( '', false ) );
+              echo esc_html( single_cat_title( '', false ) );
             } elseif ( is_tag() ) {
-              echo edu_split_title( '#' . single_tag_title( '', false ) );
+              echo esc_html( '#' . single_tag_title( '', false ) );
             } elseif ( is_author() ) {
-              echo edu_split_title( get_the_author() );
+              echo esc_html( get_the_author() );
             } elseif ( is_year() ) {
-              echo edu_split_title( get_the_time( 'Y' ) );
+              echo esc_html( get_the_time( 'Y' ) );
             } elseif ( is_month() ) {
-              echo edu_split_title( get_the_time( 'F Y' ) );
+              echo esc_html( get_the_time( 'F Y' ) );
             } elseif ( is_day() ) {
-              echo edu_split_title( get_the_time( 'j F Y' ) );
+              echo esc_html( get_the_time( 'j F Y' ) );
             } else {
               esc_html_e( 'Archivo', 'edu-theme' );
             }

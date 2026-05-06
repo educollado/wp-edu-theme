@@ -509,15 +509,7 @@ body.front-page .hero-cred {
   background: linear-gradient(to right, var(--color-border), transparent);
 }
 
-/* Título en un solo color oscuro */
-.title-rest {
-  color: #111827;
-}
 
-body.home .title-rest,
-body.front-page .title-rest {
-  color: #ffffff;
-}
 
 /* ============================================================
    PAGE TITLE

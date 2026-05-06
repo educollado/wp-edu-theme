@@ -140,13 +140,7 @@ function edu_get_post_categories_html( $post_id = null ) {
 	return trim( $out );
 }
 
-function edu_split_title( $title ) {
-	$parts = explode( ' ', trim( $title ), 2 );
-	if ( count( $parts ) === 1 ) {
-		return esc_html( $parts[0] );
-	}
-	return esc_html( $parts[0] ) . ' <span class="title-rest">' . esc_html( $parts[1] ) . '</span>';
-}
+
 
 function edu_get_audio_player_html( $post_id = null ) {
 	if ( ! $post_id ) {

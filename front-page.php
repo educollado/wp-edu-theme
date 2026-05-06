@@ -29,7 +29,7 @@ get_header();
 
     <section class="<?php echo esc_attr( $hero_class ); ?>"<?php echo $hero_style; ?>>
       <div class="hero-content">
-        <h1 class="animate-up"><?php echo edu_split_title( get_the_title() ); ?></h1>
+        <h1 class="animate-up"><?php echo esc_html( get_the_title() ); ?></h1>
         <?php $sub = get_theme_mod( 'hero_sub_text', '' ); if ( $sub ) : ?>
           <p class="hero-sub animate-up animate-up--delay-1"><?php echo esc_html( $sub ); ?></p>
         <?php endif; ?>
