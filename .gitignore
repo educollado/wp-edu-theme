@@ -1,6 +1,7 @@
-# Claude Code — archivos locales
+# archivos locales
 .claude/
 MEMORY.md
+.codex/
 
 # WordPress
 *.log
