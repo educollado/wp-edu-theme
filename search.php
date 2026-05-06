@@ -112,7 +112,6 @@ get_header();
 
           <?php else : ?>
             <p><?php printf( esc_html__( 'No se encontraron resultados para "%s".', 'edu-theme' ), esc_html( get_search_query() ) ); ?></p>
-            <?php get_search_form(); ?>
           <?php endif; ?>
 
         </div>
