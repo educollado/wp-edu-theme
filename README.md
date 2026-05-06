@@ -226,6 +226,11 @@ Los ajustes del hero se configuran en **Apariencia → Personalizar**:
 
 ## Changelog
 
+### 1.1.1 — 2026-05-06
+- Actualizada paleta de colores: fondos claros (`#f9fafb`, `#f3f4f6`, `#ffffff`), texto oscuro (`#111827`, `#374151`)
+- Cambiada tipografía de títulos de Fraunces a Lora
+- Corregido formulario de búsqueda duplicado en página de resultados sin resultados
+
 ### 1.1.0 — 2026-04-06
 - Hero de la homepage refactorizado: configurable desde el Personalizador (`hero_bg_image`, `hero_sub_text`, `hero_cred_text`)
 - Añadido botón «Borrar Transients» en la barra de administración
