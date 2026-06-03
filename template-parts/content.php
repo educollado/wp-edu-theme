@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
   <?php if ( has_post_thumbnail() ) : ?>
     <div class="post-card__thumb">
-      <a href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
+      <a href="<?php echo esc_url( get_permalink() ); ?>" tabindex="-1" aria-hidden="true">
         <?php the_post_thumbnail( 'edu-card', array( 'alt' => '' ) ); ?>
       </a>
     </div>
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     </div>
 
     <h2 class="post-card__title">
-      <a href="<?php the_permalink(); ?>" style="text-decoration:none;color:inherit;"><?php the_title(); ?></a>
+      <a href="<?php echo esc_url( get_permalink() ); ?>" style="text-decoration:none;color:inherit;"><?php echo esc_html( get_the_title() ); ?></a>
     </h2>
 
     <?php $exc = get_the_excerpt(); if ( $exc ) : ?>
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   </div>
 
   <div class="post-card__footer">
-    <a href="<?php the_permalink(); ?>" class="post-card__cta">
+    <a href="<?php echo esc_url( get_permalink() ); ?>" class="post-card__cta">
       <?php esc_html_e( 'Leer entrada', 'edu-theme' ); ?> &rarr;
     </a>
   </div>

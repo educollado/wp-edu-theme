@@ -43,7 +43,7 @@ get_header();
                 <?php if ( $thumb ) : ?>
                   <div class="edu-post-listing__media">
                     <a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-                      <?php echo $thumb; ?>
+                      <?php echo wp_kses_post( $thumb ); ?>
                     </a>
                   </div>
                 <?php endif; ?>
@@ -53,13 +53,13 @@ get_header();
                     <span class="edu-post-listing__date"><?php echo esc_html( get_the_date() ); ?></span>
                   </div>
                   <h3 class="edu-post-listing__title edu-post-listing__title--featured">
-                    <a href="<?php echo esc_url( $permalink ); ?>"><?php the_title(); ?></a>
+                    <a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( get_the_title() ); ?></a>
                   </h3>
                   <?php if ( $excerpt ) : ?>
                     <p class="edu-post-listing__excerpt"><?php echo esc_html( $excerpt ); ?></p>
                   <?php endif; ?>
                   <?php if ( $player_html ) : ?>
-                    <div class="edu-post-listing__player"><?php echo $player_html; ?></div>
+                    <div class="edu-post-listing__player"><?php echo wp_kses_post( $player_html ); ?></div>
                   <?php endif; ?>
                   <a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__cta"><?php echo esc_html( $cta_text ); ?> &rarr;</a>
                 </div>
@@ -71,7 +71,7 @@ get_header();
               <article class="edu-post-listing__item<?php echo $is_podcast ? ' is-podcast' : ''; ?>">
                 <?php if ( $thumb ) : ?>
                   <a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-                    <?php echo $thumb; ?>
+                    <?php echo wp_kses_post( $thumb ); ?>
                   </a>
                 <?php endif; ?>
                 <div class="edu-post-listing__body">
@@ -80,13 +80,13 @@ get_header();
                     <span class="edu-post-listing__date"><?php echo esc_html( get_the_date() ); ?></span>
                   </div>
                   <h3 class="edu-post-listing__title">
-                    <a href="<?php echo esc_url( $permalink ); ?>"><?php the_title(); ?></a>
+                    <a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( get_the_title() ); ?></a>
                   </h3>
                   <?php if ( $excerpt ) : ?>
                     <p class="edu-post-listing__excerpt edu-post-listing__excerpt--small"><?php echo esc_html( $excerpt ); ?></p>
                   <?php endif; ?>
                   <?php if ( $player_html ) : ?>
-                    <div class="edu-post-listing__player edu-post-listing__player--small"><?php echo $player_html; ?></div>
+                    <div class="edu-post-listing__player edu-post-listing__player--small"><?php echo wp_kses_post( $player_html ); ?></div>
                   <?php endif; ?>
                   <a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__cta"><?php echo esc_html( $cta_text ); ?> &rarr;</a>
                 </div>

@@ -20,14 +20,14 @@ get_header();
   <?php while ( $front_query->have_posts() ) : $front_query->the_post(); ?>
 
   <?php
-  $hero_bg    = get_theme_mod( 'hero_bg_image', '' );
-  $hero_class = $hero_bg ? 'hero hero--img' : 'hero';
-  $hero_style = $hero_bg ? ' style="background-image:url(' . esc_url( $hero_bg ) . ')"' : '';
+  $hero_bg          = get_theme_mod( 'hero_bg_image', '' );
+  $hero_class       = $hero_bg ? 'hero hero--img' : 'hero';
+  $hero_style_value = $hero_bg ? 'background-image:url("' . esc_url( $hero_bg ) . '")' : '';
   ?>
 
   <div class="page-paper">
 
-    <section class="<?php echo esc_attr( $hero_class ); ?>"<?php echo $hero_style; ?>>
+    <section class="<?php echo esc_attr( $hero_class ); ?>"<?php echo $hero_style_value ? ' style="' . esc_attr( $hero_style_value ) . '"' : ''; ?>>
       <div class="hero-content">
         <h1 class="animate-up"><?php echo esc_html( get_the_title() ); ?></h1>
         <?php $sub = get_theme_mod( 'hero_sub_text', '' ); if ( $sub ) : ?>

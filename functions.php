@@ -543,7 +543,7 @@ function edu_output_social_meta_tags() {
 	<meta property="og:title" content="<?php echo esc_attr( $title ); ?>">
 	<meta property="og:description" content="<?php echo esc_attr( $description ); ?>">
 	<meta property="og:url" content="<?php echo esc_url( $url ); ?>">
-	<meta name="twitter:card" content="<?php echo ! empty( $image['url'] ) ? 'summary_large_image' : 'summary'; ?>">
+	<meta name="twitter:card" content="<?php echo esc_attr( ! empty( $image['url'] ) ? 'summary_large_image' : 'summary' ); ?>">
 	<meta name="twitter:site" content="@ecollado">
 	<meta name="twitter:title" content="<?php echo esc_attr( $title ); ?>">
 	<meta name="twitter:description" content="<?php echo esc_attr( $description ); ?>">
@@ -567,10 +567,10 @@ function edu_output_social_meta_tags() {
 		<?php endif; ?>
 		<meta name="twitter:image" content="<?php echo esc_url( $image['url'] ); ?>">
 		<?php if ( ! empty( $image['width'] ) ) : ?>
-			<meta property="og:image:width" content="<?php echo (int) $image['width']; ?>">
+			<meta property="og:image:width" content="<?php echo esc_attr( (int) $image['width'] ); ?>">
 		<?php endif; ?>
 		<?php if ( ! empty( $image['height'] ) ) : ?>
-			<meta property="og:image:height" content="<?php echo (int) $image['height']; ?>">
+			<meta property="og:image:height" content="<?php echo esc_attr( (int) $image['height'] ); ?>">
 		<?php endif; ?>
 	<?php endif; ?>
 	<?php if ( $post_id && 'article' === $type ) : ?>
@@ -783,12 +783,12 @@ function edu_recent_posts_shortcode( $atts ) {
 				<?php $thumb_html = edu_get_post_preview_image_html( get_the_ID(), 'thumbnail' ); ?>
 				<li class="sidebar-post-item">
 					<?php if ( $thumb_html ) : ?>
-						<a href="<?php the_permalink(); ?>" class="sidebar-post-thumb" tabindex="-1" aria-hidden="true">
-							<?php echo $thumb_html; ?>
+						<a href="<?php echo esc_url( get_permalink() ); ?>" class="sidebar-post-thumb" tabindex="-1" aria-hidden="true">
+							<?php echo wp_kses_post( $thumb_html ); ?>
 						</a>
 					<?php endif; ?>
 					<div class="sidebar-post-info">
-						<a href="<?php the_permalink(); ?>" class="sidebar-post-title"><?php the_title(); ?></a>
+						<a href="<?php echo esc_url( get_permalink() ); ?>" class="sidebar-post-title"><?php echo esc_html( get_the_title() ); ?></a>
 						<span class="sidebar-post-date"><?php echo esc_html( get_the_date() ); ?></span>
 					</div>
 				</li>
@@ -877,7 +877,7 @@ function edu_latest_post_shortcode( $atts ) {
 			<?php if ( $thumb_html ) : ?>
 				<div class="edu-post-listing__media">
 					<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-						<?php echo $thumb_html; ?>
+						<?php echo wp_kses_post( $thumb_html ); ?>
 					</a>
 				</div>
 			<?php endif; ?>
@@ -893,7 +893,7 @@ function edu_latest_post_shortcode( $atts ) {
 					<p class="edu-post-listing__excerpt"><?php echo esc_html( $excerpt ); ?></p>
 				<?php endif; ?>
 				<?php if ( $player_html ) : ?>
-					<div class="edu-post-listing__player"><?php echo $player_html; ?></div>
+					<div class="edu-post-listing__player"><?php echo wp_kses_post( $player_html ); ?></div>
 				<?php endif; ?>
 				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__cta"><?php echo esc_html( $cta_text ); ?> &rarr;</a>
 			</div>
@@ -909,7 +909,7 @@ function edu_latest_post_shortcode( $atts ) {
 			<article class="edu-post-listing__item<?php echo $is_podcast ? ' is-podcast' : ''; ?>">
 				<?php if ( $thumb_html ) : ?>
 					<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-						<?php echo $thumb_html; ?>
+						<?php echo wp_kses_post( $thumb_html ); ?>
 					</a>
 				<?php endif; ?>
 				<div class="edu-post-listing__body">
@@ -924,7 +924,7 @@ function edu_latest_post_shortcode( $atts ) {
 						<p class="edu-post-listing__excerpt edu-post-listing__excerpt--small"><?php echo esc_html( $excerpt ); ?></p>
 					<?php endif; ?>
 					<?php if ( $player_html ) : ?>
-						<div class="edu-post-listing__player edu-post-listing__player--small"><?php echo $player_html; ?></div>
+						<div class="edu-post-listing__player edu-post-listing__player--small"><?php echo wp_kses_post( $player_html ); ?></div>
 					<?php endif; ?>
 					<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__cta"><?php echo esc_html( $cta_text ); ?> &rarr;</a>
 				</div>
@@ -1039,12 +1039,12 @@ function edu_latest_audio_shortcode( $atts ) {
 			<?php if ( $has_side_media ) : ?>
 				<div class="edu-post-listing__media">
 					<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-						<?php echo $thumb_html; ?>
+						<?php echo wp_kses_post( $thumb_html ); ?>
 					</a>
 				</div>
 			<?php elseif ( $thumb_html ) : ?>
 				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-					<?php echo $thumb_html; ?>
+					<?php echo wp_kses_post( $thumb_html ); ?>
 				</a>
 			<?php endif; ?>
 			<div class="edu-post-listing__body">
@@ -1061,7 +1061,7 @@ function edu_latest_audio_shortcode( $atts ) {
 					<p class="edu-post-listing__excerpt"><?php echo esc_html( $excerpt ); ?></p>
 				<?php endif; ?>
 				<?php if ( $player_html ) : ?>
-					<div class="edu-post-listing__player"><?php echo $player_html; ?></div>
+					<div class="edu-post-listing__player"><?php echo wp_kses_post( $player_html ); ?></div>
 				<?php endif; ?>
 				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__cta"><?php esc_html_e( 'Escuchar', 'edu-theme' ); ?> &rarr;</a>
 			</div>
@@ -1148,12 +1148,12 @@ function edu_latest_article_shortcode( $atts ) {
 			<?php if ( $has_side_media ) : ?>
 				<div class="edu-post-listing__media">
 					<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-						<?php echo $thumb_html; ?>
+						<?php echo wp_kses_post( $thumb_html ); ?>
 					</a>
 				</div>
 			<?php elseif ( $thumb_html ) : ?>
 				<a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__img" tabindex="-1" aria-hidden="true">
-					<?php echo $thumb_html; ?>
+					<?php echo wp_kses_post( $thumb_html ); ?>
 				</a>
 			<?php endif; ?>
 			<div class="edu-post-listing__body">
@@ -1494,13 +1494,13 @@ class Edu_Nav_Walker extends Walker_Nav_Menu {
 		$attributes = '';
 		foreach ( $atts as $attr => $value ) {
 			if ( ! empty( $value ) ) {
-				$value       = esc_attr( $value );
+				$value       = 'href' === $attr ? esc_url( $value ) : esc_attr( $value );
 				$attributes .= ' ' . $attr . '="' . $value . '"';
 			}
 		}
 
 		$title   = apply_filters( 'the_title', $item->title, $item->ID );
-		$output .= '<a' . $attributes . '>' . $title . '</a>';
+		$output .= '<a' . $attributes . '>' . esc_html( $title ) . '</a>';
 	}
 
 	public function end_el( &$output, $data_object, $depth = 0, $args = null ) {

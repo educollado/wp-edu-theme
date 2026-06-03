@@ -38,12 +38,12 @@ if ( is_active_sidebar( 'sidebar-blog' ) ) :
       ?>
         <li class="sidebar-post-item">
           <?php if ( has_post_thumbnail() ) : ?>
-            <a href="<?php the_permalink(); ?>" class="sidebar-post-thumb" tabindex="-1" aria-hidden="true">
+            <a href="<?php echo esc_url( get_permalink() ); ?>" class="sidebar-post-thumb" tabindex="-1" aria-hidden="true">
               <?php the_post_thumbnail( 'thumbnail', array( 'alt' => '' ) ); ?>
             </a>
           <?php endif; ?>
           <div class="sidebar-post-info">
-            <a href="<?php the_permalink(); ?>" class="sidebar-post-title"><?php the_title(); ?></a>
+            <a href="<?php echo esc_url( get_permalink() ); ?>" class="sidebar-post-title"><?php echo esc_html( get_the_title() ); ?></a>
             <span class="sidebar-post-date"><?php echo esc_html( get_the_date() ); ?></span>
           </div>
         </li>
