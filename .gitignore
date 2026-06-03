@@ -2,6 +2,7 @@
 .claude/
 MEMORY.md
 .codex/
+deploy.sh
 
 # WordPress
 *.log
