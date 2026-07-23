@@ -1,6 +1,6 @@
 # wp-edu-theme
 
-![Versión](https://img.shields.io/badge/versión-1.0.0-b5470e?style=flat-square)
+![Versión](https://img.shields.io/badge/versión-1.1.2-b5470e?style=flat-square)
 ![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-21759b?style=flat-square&logo=wordpress&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.0%2B-777bb4?style=flat-square&logo=php&logoColor=white)
 ![Licencia](https://img.shields.io/badge/licencia-GPL%20v3-4caf50?style=flat-square)
@@ -225,6 +225,15 @@ Los ajustes del hero se configuran en **Apariencia → Personalizar**:
 ---
 
 ## Changelog
+
+### 1.1.2 — 2026-07-23
+- Verificada la compatibilidad del tema y sus pruebas con PHP 8.5
+- Limitado a 20 el número máximo de entradas solicitado por los shortcodes
+- Añadida una lista cerrada de valores permitidos para `orderby`
+- Endurecida la salida JSON-LD frente al cierre prematuro de etiquetas `<script>`
+- Corregida la invalidación de transients con Redis y Memcached mediante generaciones de caché
+- Evitados avisos de PHP cuando el título del widget de redes sociales no está definido
+- Ampliada la suite de seguridad a 25 pruebas
 
 ### 1.1.1 — 2026-05-06
 - Actualizada paleta de colores: fondos claros (`#f9fafb`, `#f3f4f6`, `#ffffff`), texto oscuro (`#111827`, `#374151`)
