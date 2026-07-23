@@ -729,7 +729,7 @@ function edu_output_json_ld() {
 		'@graph'   => $graph,
 	);
 
-	echo "\t" . '<script type="application/ld+json">' . wp_json_encode( $ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+	echo "\t" . '<script type="application/ld+json">' . wp_json_encode( $ld, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
 }
 add_action( 'wp_head', 'edu_output_json_ld', 6 );
 
@@ -742,10 +742,17 @@ function edu_recent_posts_shortcode( $atts ) {
 		'orderby' => 'date',
 	), $atts, 'edu_recent_posts' );
 
+	$count             = min( 20, max( 1, (int) $atts['count'] ) );
+	$allowed_orderby   = array( 'date', 'title', 'modified', 'menu_order', 'rand' );
+	$requested_orderby = sanitize_key( $atts['orderby'] );
+	$orderby           = in_array( $requested_orderby, $allowed_orderby, true )
+		? $requested_orderby
+		: 'date';
+
 	$args = array(
-		'posts_per_page' => (int) $atts['count'],
+		'posts_per_page' => $count,
 		'post_status'    => 'publish',
-		'orderby'        => sanitize_key( $atts['orderby'] ),
+		'orderby'        => $orderby,
 		'order'          => 'DESC',
 		'no_found_rows'  => true,
 	);
@@ -809,17 +816,18 @@ function edu_latest_post_shortcode( $atts ) {
 		'count'    => 1,
 	), $atts, 'edu_latest_post' );
 
-	// Generar cache key determinista: ordenar parametros y usar json_encode
+	// Generar cache key determinista: ordenar parámetros y usar wp_json_encode.
 	$sorted_atts = $atts;
 	ksort( $sorted_atts );
-	$cache_key = 'edu_latest_post_v2_' . md5( json_encode( $sorted_atts ) );
-	$cached    = get_transient( $cache_key );
+	$cache_version = max( 1, (int) get_option( 'edu_shortcode_cache_version', 1 ) );
+	$cache_key     = 'edu_latest_post_v2_' . $cache_version . '_' . md5( wp_json_encode( $sorted_atts ) );
+	$cached          = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
 	}
 
 	$args = array(
-		'posts_per_page' => max( 1, (int) $atts['count'] ),
+		'posts_per_page' => min( 20, max( 1, (int) $atts['count'] ) ),
 		'post_status'    => 'publish',
 		'orderby'        => 'date',
 		'order'          => 'DESC',
@@ -974,11 +982,12 @@ function edu_latest_audio_shortcode( $atts ) {
 		? $atts['img_position']
 		: 'right';
 
-	// Generar cache key determinista: ordenar parametros y usar json_encode
+	// Generar cache key determinista: ordenar parámetros y usar wp_json_encode.
 	$sorted_atts = $atts;
 	ksort( $sorted_atts );
-	$cache_key = 'edu_latest_audio_v2_' . md5( json_encode( $sorted_atts ) );
-	$cached    = get_transient( $cache_key );
+	$cache_version = max( 1, (int) get_option( 'edu_shortcode_cache_version', 1 ) );
+	$cache_key     = 'edu_latest_audio_v2_' . $cache_version . '_' . md5( wp_json_encode( $sorted_atts ) );
+	$cached          = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
 	}
@@ -1085,11 +1094,12 @@ function edu_latest_article_shortcode( $atts ) {
 		? $atts['img_position']
 		: 'right';
 
-	// Generar cache key determinista: ordenar parametros y usar json_encode
+	// Generar cache key determinista: ordenar parámetros y usar wp_json_encode.
 	$sorted_atts = $atts;
 	ksort( $sorted_atts );
-	$cache_key = 'edu_latest_article_v2_' . md5( json_encode( $sorted_atts ) );
-	$cached    = get_transient( $cache_key );
+	$cache_version = max( 1, (int) get_option( 'edu_shortcode_cache_version', 1 ) );
+	$cache_key     = 'edu_latest_article_v2_' . $cache_version . '_' . md5( wp_json_encode( $sorted_atts ) );
+	$cached          = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
 	}
@@ -1181,31 +1191,13 @@ function edu_latest_article_shortcode( $atts ) {
 add_shortcode( 'edu_latest_article', 'edu_latest_article_shortcode' );
 
 function edu_delete_shortcode_transients() {
+	// Cambiar la generación invalida de inmediato las claves en Redis/Memcached.
+	$cache_version = max( 1, (int) get_option( 'edu_shortcode_cache_version', 1 ) );
+	update_option( 'edu_shortcode_cache_version', $cache_version + 1, false );
+
 	if ( wp_using_ext_object_cache() ) {
-		// Redis/Memcached: borrar solo los transients específicos del tema
-		// en lugar de flush completo que afecta todo el cache
-		$cache_keys = array(
-			'_transient_edu_latest_post_v2_',
-			'_transient_edu_latest_audio_v2_',
-			'_transient_edu_latest_article_v2_',
-		);
-		foreach ( $cache_keys as $key ) {
-			// Borrar todos los transients que empiecen con este prefijo
-			if ( function_exists( 'wp_cache_delete' ) ) {
-				wp_cache_delete( $key . '%' );
-			}
-		}
-		// También borrar patrones de timeout
-		$timeout_keys = array(
-			'_transient_timeout_edu_latest_post_v2_',
-			'_transient_timeout_edu_latest_audio_v2_',
-			'_transient_timeout_edu_latest_article_v2_',
-		);
-		foreach ( $timeout_keys as $key ) {
-			if ( function_exists( 'wp_cache_delete' ) ) {
-				wp_cache_delete( $key . '%' );
-			}
-		}
+		// Las claves de generaciones anteriores caducan por sí solas en seis horas.
+		return;
 	} else {
 		global $wpdb;
 		$prefix = $wpdb->esc_like( '_transient_edu_' );
@@ -1453,7 +1445,7 @@ class Edu_Social_Icons_Widget extends WP_Widget {
 	}
 
 	public function update( $new_instance, $old_instance ) {
-		return array( 'title' => sanitize_text_field( $new_instance['title'] ) );
+		return array( 'title' => sanitize_text_field( $new_instance['title'] ?? '' ) );
 	}
 }
 add_action( 'widgets_init', function() {
@@ -1478,7 +1470,7 @@ class Edu_Nav_Walker extends Walker_Nav_Menu {
 	public function start_el( &$output, $data_object, $depth = 0, $args = null, $current_object_id = 0 ) {
 		$item = $data_object;
 		$classes = empty( $item->classes ) ? array() : (array) $item->classes;
-		$has_children = in_array( 'menu-item-has-children', $classes );
+		$has_children = in_array( 'menu-item-has-children', $classes, true );
 
 		if ( $depth === 0 && $has_children ) {
 			$output .= '<li class="nav__item--dropdown">';

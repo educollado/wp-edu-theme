@@ -38,13 +38,13 @@ test('Todos los archivos PHP tienen proteccion ABSPATH', function() use ($themeD
 });
 
 // -----------------------------------------------------------------------------
-// Test 2: Cache keys usan json_encode en lugar de serialize
+// Test 2: Cache keys usan wp_json_encode en lugar de serialize
 // -----------------------------------------------------------------------------
 
-test('Cache keys usan json_encode en lugar de serialize', function() use ($themeDir) {
+test('Cache keys usan wp_json_encode en lugar de serialize', function() use ($themeDir) {
     $fc = file_get_contents($themeDir . '/functions.php');
     assert_false(str_contains($fc, 'md5( serialize('), "serializado en cache keys");
-    assert_true(str_contains($fc, 'md5( json_encode('), "json_encode en cache keys");
+    assert_true(str_contains($fc, 'md5( wp_json_encode('), "wp_json_encode ausente en cache keys");
     assert_true(str_contains($fc, 'ksort('), "ksort en cache keys");
 });
 
@@ -55,7 +55,10 @@ test('Cache keys usan json_encode en lugar de serialize', function() use ($theme
 test('No se usa wp_cache_flush()', function() use ($themeDir) {
     $fc = file_get_contents($themeDir . '/functions.php');
     assert_false(str_contains($fc, 'wp_cache_flush()'), "wp_cache_flush presente");
-    assert_true(str_contains($fc, 'wp_cache_delete('), "wp_cache_delete ausente");
+    assert_true(str_contains($fc, "update_option( 'edu_shortcode_cache_version'"),
+        "falta invalidacion por generacion de cache");
+    assert_false(str_contains($fc, "wp_cache_delete( \$key . '%' )"),
+        "wp_cache_delete no admite comodines");
 });
 
 // -----------------------------------------------------------------------------
@@ -315,12 +318,12 @@ test('SQL directo requiere prepare', function() use ($themeDir) {
 
 test('Shortcodes limitan atributos de consulta', function() use ($themeDir) {
     $fc = file_get_contents($themeDir . '/functions.php');
-    assert_contains("'posts_per_page' => (int) \$atts['count']", $fc,
-        "edu_recent_posts debe castear count a int");
-    assert_contains("'posts_per_page' => max( 1, (int) \$atts['count'] )", $fc,
-        "edu_latest_post debe limitar count a minimo 1");
-    assert_contains("'orderby'        => sanitize_key( \$atts['orderby'] )", $fc,
-        "orderby debe pasar por sanitize_key()");
+    assert_contains("min( 20, max( 1, (int) \$atts['count'] ) )", $fc,
+        "los shortcodes deben limitar count entre 1 y 20");
+    assert_contains("\$allowed_orderby   = array( 'date', 'title', 'modified', 'menu_order', 'rand' )", $fc,
+        "orderby debe usar una allowlist");
+    assert_contains("in_array( \$requested_orderby, \$allowed_orderby, true )", $fc,
+        "orderby debe validarse estrictamente");
     assert_contains("in_array( \$atts['img_position'], array( 'left', 'right', 'up', 'down' ), true )", $fc,
         "img_position debe tener allowlist estricta");
 });
@@ -357,4 +360,27 @@ test('HTML media construido a mano escapa src', function() use ($themeDir) {
         "enclosure debe escapar URL");
     assert_contains('<img src="\' . esc_url( $matches[1] ) . \'"', $fc,
         "preview image debe escapar URL");
+});
+
+// -----------------------------------------------------------------------------
+// Test 24: JSON embebido no puede cerrar prematuramente la etiqueta script
+// -----------------------------------------------------------------------------
+
+test('JSON-LD escapa etiquetas HTML', function() use ($themeDir) {
+    $fc = file_get_contents($themeDir . '/functions.php');
+    assert_contains(
+        'wp_json_encode( $ld, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )',
+        $fc,
+        "JSON-LD debe usar JSON_HEX_TAG"
+    );
+});
+
+// -----------------------------------------------------------------------------
+// Test 25: Widget tolera formularios sin titulo en PHP 8+
+// -----------------------------------------------------------------------------
+
+test('Widget social tolera titulo ausente', function() use ($themeDir) {
+    $fc = file_get_contents($themeDir . '/functions.php');
+    assert_contains("\$new_instance['title'] ?? ''", $fc,
+        "update() debe tolerar que title no exista");
 });
