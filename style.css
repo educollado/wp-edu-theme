@@ -236,11 +236,24 @@ body::before {
   transition: opacity 0.15s, visibility 0s 0.15s;
 }
 
-.nav__item--dropdown:hover .nav__dropdown {
+.nav__item--dropdown:hover > .nav__dropdown,
+.nav__item--dropdown:focus-within > .nav__dropdown,
+.nav__dropdown li:hover > .nav__dropdown,
+.nav__dropdown li:focus-within > .nav__dropdown {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transition: opacity 0.15s, visibility 0s;
+}
+
+.nav__dropdown li {
+  position: relative;
+}
+
+.nav__dropdown--nested {
+  top: 0;
+  left: calc(100% + 4px);
+  transform: none;
 }
 
 .nav__dropdown li a {
@@ -260,6 +273,11 @@ body::before {
 .nav__dropdown li a:hover {
   color: var(--color-accent-primary);
   background: rgba(180, 35, 24, 0.04);
+}
+
+.nav__links .current-menu-item > a,
+.nav__links .current-menu-ancestor > a {
+  color: var(--color-accent-primary);
 }
 
 /* Nav toggle (hamburger) */
@@ -921,6 +939,37 @@ body.front-page .course-hero__title {
   color: var(--color-text-muted);
   letter-spacing: 0.05em;
   margin: 0;
+}
+
+.footer__links {
+  display: flex;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__links a {
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  text-decoration: none;
+}
+
+.footer__links a:hover,
+.footer__links a:focus {
+  color: var(--color-accent-primary);
+}
+
+.footer__widgets {
+  width: 100%;
+}
+
+.footer__widgets .widget {
+  margin: 0;
+}
+
+.footer__widgets .widget-title {
+  margin: 0 0 var(--space-sm);
 }
 
 /* ============================================================
@@ -2492,6 +2541,14 @@ figure:has(img.foto-overlay)::after {
 
   .nav__dropdown li a {
     padding-left: 1.75rem;
+  }
+
+  .nav__dropdown--nested {
+    border-top: none;
+  }
+
+  .nav__dropdown--nested li a {
+    padding-left: 2.5rem;
   }
 
   .page-layout__content {

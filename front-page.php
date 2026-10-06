@@ -2,10 +2,14 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 $page_on_front = (int) get_option( 'page_on_front' );
+
+if ( 'page' !== get_option( 'show_on_front' ) || ! $page_on_front ) {
+	get_template_part( 'index' );
+	return;
+}
+
 get_header();
 ?>
-
-<?php if ( $page_on_front > 0 ) : ?>
 
   <?php
   $front_query = new WP_Query( array(
@@ -58,7 +62,5 @@ get_header();
 
   <?php endwhile; ?>
   <?php wp_reset_postdata(); ?>
-
-<?php endif; ?>
 
 <?php get_footer(); ?>

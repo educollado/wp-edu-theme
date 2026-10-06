@@ -161,13 +161,23 @@ function edu_get_audio_player_html( $post_id = null ) {
 		// Usar el shortcode de Powerpress si está disponible (renderiza su propio player)
 		if ( shortcode_exists( 'powerpress' ) ) {
 			global $post;
-			$prev_post = $post;
-			$post       = get_post( $post_id ); // phpcs:ignore
-			setup_postdata( $post );
-			$player = do_shortcode( '[powerpress]' );
-			$post   = $prev_post; // phpcs:ignore
-			wp_reset_postdata();
-			if ( $player ) return $player;
+			$previous_post = $post;
+			$post          = get_post( $post_id ); // phpcs:ignore
+
+			if ( $post ) {
+				setup_postdata( $post );
+				$player = do_shortcode( '[powerpress]' );
+
+				// Restaurar el post del contexto llamador (también en consultas secundarias).
+				$post = $previous_post; // phpcs:ignore
+				if ( $previous_post instanceof WP_Post ) {
+					setup_postdata( $previous_post );
+				} else {
+					wp_reset_postdata();
+				}
+
+				if ( $player ) return $player;
+			}
 		}
 		// Fallback: audio nativo con la URL de Powerpress
 		return '<audio controls preload="none" class="edu-audio-player"><source src="' . esc_url( $pp_url ) . '"></audio>';
@@ -1456,32 +1466,48 @@ add_action( 'widgets_init', function() {
 
 class Edu_Nav_Walker extends Walker_Nav_Menu {
 	public function start_lvl( &$output, $depth = 0, $args = null ) {
-		if ( $depth === 0 ) {
-			$output .= '<ul class="nav__dropdown">';
+		$indent  = str_repeat( "\t", $depth );
+		$classes = array( 'sub-menu', 'nav__dropdown' );
+
+		if ( $depth > 0 ) {
+			$classes[] = 'nav__dropdown--nested';
 		}
+
+		$classes     = apply_filters( 'nav_menu_submenu_css_class', $classes, $args, $depth );
+		$class_names = implode( ' ', array_filter( $classes ) );
+		$output     .= "\n$indent<ul class=\"" . esc_attr( $class_names ) . "\">\n";
 	}
 
 	public function end_lvl( &$output, $depth = 0, $args = null ) {
-		if ( $depth === 0 ) {
-			$output .= '</ul>';
-		}
+		$indent  = str_repeat( "\t", $depth );
+		$output .= "$indent</ul>\n";
 	}
 
 	public function start_el( &$output, $data_object, $depth = 0, $args = null, $current_object_id = 0 ) {
-		$item = $data_object;
+		$args    = $args ?: (object) array();
+		$item    = $data_object;
+		$indent  = $depth ? str_repeat( "\t", $depth ) : '';
 		$classes = empty( $item->classes ) ? array() : (array) $item->classes;
 		$has_children = in_array( 'menu-item-has-children', $classes, true );
 
 		if ( $depth === 0 && $has_children ) {
-			$output .= '<li class="nav__item--dropdown">';
-		} else {
-			$output .= '<li>';
+			$classes[] = 'nav__item--dropdown';
 		}
 
-		$atts = array();
-		$atts['href'] = ! empty( $item->url ) ? $item->url : '';
-		if ( ! empty( $item->target ) ) $atts['target'] = $item->target;
-		if ( ! empty( $item->xfn ) )    $atts['rel']    = $item->xfn;
+		$args        = apply_filters( 'nav_menu_item_args', $args, $item, $depth );
+		$classes     = apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth );
+		$class_names = implode( ' ', array_filter( $classes ) );
+		$item_id     = apply_filters( 'nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args, $depth );
+		$output     .= $indent . '<li' . ( $item_id ? ' id="' . esc_attr( $item_id ) . '"' : '' ) . ( $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '' ) . '>';
+
+		$atts = array(
+			'title'        => ! empty( $item->attr_title ) ? $item->attr_title : '',
+			'target'       => ! empty( $item->target ) ? $item->target : '',
+			'rel'          => ! empty( $item->xfn ) ? $item->xfn : '',
+			'href'         => ! empty( $item->url ) ? $item->url : '',
+			'aria-current' => ! empty( $item->current ) ? 'page' : '',
+		);
+		$atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args, $depth );
 
 		$attributes = '';
 		foreach ( $atts as $attr => $value ) {
@@ -1491,8 +1517,10 @@ class Edu_Nav_Walker extends Walker_Nav_Menu {
 			}
 		}
 
-		$title   = apply_filters( 'the_title', $item->title, $item->ID );
-		$output .= '<a' . $attributes . '>' . esc_html( $title ) . '</a>';
+		$title       = apply_filters( 'the_title', $item->title, $item->ID );
+		$title       = apply_filters( 'nav_menu_item_title', $title, $item, $args, $depth );
+		$item_output = ( $args->before ?? '' ) . '<a' . $attributes . '>' . ( $args->link_before ?? '' ) . esc_html( $title ) . ( $args->link_after ?? '' ) . '</a>' . ( $args->after ?? '' );
+		$output     .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
 	}
 
 	public function end_el( &$output, $data_object, $depth = 0, $args = null ) {

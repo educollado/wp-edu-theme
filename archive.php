@@ -85,9 +85,12 @@ get_header();
                   <a href="<?php echo esc_url( $permalink ); ?>" class="edu-post-listing__cta"><?php echo esc_html( $cta_text ); ?> &rarr;</a>
                 </div>
               </article>
-              <div class="edu-post-listing__grid">
 
               <?php else : ?>
+
+              <?php if ( $archive_index === 1 ) : ?>
+              <div class="edu-post-listing__grid">
+              <?php endif; ?>
 
               <article class="edu-post-listing__item<?php echo $is_podcast ? ' is-podcast' : ''; ?>">
                 <?php if ( $thumb ) : ?>
