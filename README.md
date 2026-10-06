@@ -1,6 +1,6 @@
 # wp-edu-theme
 
-![Versión](https://img.shields.io/badge/versión-1.1.2-b5470e?style=flat-square)
+![Versión](https://img.shields.io/badge/versión-1.1.3-b5470e?style=flat-square)
 ![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-21759b?style=flat-square&logo=wordpress&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.0%2B-777bb4?style=flat-square&logo=php&logoColor=white)
 ![Licencia](https://img.shields.io/badge/licencia-GPL%20v3-4caf50?style=flat-square)
@@ -225,6 +225,13 @@ Los ajustes del hero se configuran en **Apariencia → Personalizar**:
 ---
 
 ## Changelog
+
+### 1.1.3 — 2026-10-06
+- Corregido el marcado de los listados con un único resultado en la portada del blog, archivos y búsquedas
+- Recuperada la portada basada en «Tus últimas entradas» cuando no hay una página estática configurada
+- Restaurado el contexto del post tras renderizar el reproductor de PowerPress desde consultas secundarias
+- Renderizados el menú y la zona de widgets registrados para el pie de página
+- Mejorado el walker de navegación: conserva las clases y filtros de WordPress, marca el enlace actual y admite submenús anidados
 
 ### 1.1.2 — 2026-07-23
 - Verificada la compatibilidad del tema y sus pruebas con PHP 8.5
